@@ -16,16 +16,30 @@
               :loop = "barrageLoop"
       >
       </vue-baberrage>
-      <div class="chat-wrapper">
-        <el-row>
-<!--          <el-col :xs="10" :sm="10" :md="8" :lg="8" :xl="7">-->
-<!--            <side-bar />-->
-<!--          </el-col>-->
-          <el-col :xs="14" :sm="14" :md="24" :lg="16" :xl="17">
-            <current-conversation />
-          </el-col>
-        </el-row>
-      </div>
+      <transition name="chatroom">
+          <div class="chat-wrapper" v-if="showChatRoom">
+              <el-row>
+                  <!--          <el-col :xs="10" :sm="10" :md="8" :lg="8" :xl="7">-->
+                  <!--            <side-bar />-->
+                  <!--          </el-col>-->
+                  <el-col :xs="14" :sm="14" :md="24" :lg="16" :xl="17">
+                      <current-conversation />
+                  </el-col>
+              </el-row>
+          </div>
+      </transition>
+      <transition name="chatroom">
+        <div class="float wrap" style="cursor: pointer"  @click="showChatRoom = !showChatRoom"
+              v-show="showChatRoom">
+          <i class="iconfont icon-youjiantou"></i>
+        </div>
+      </transition>
+      <transition name="float">
+        <div  class="chatroom-float wrap" style="cursor: pointer" @click="showChatRoom = !showChatRoom"
+              v-show="!showChatRoom">
+          <i class="iconfont icon-zuojiantou"></i>
+        </div>
+      </transition>
       <call-layer ref="callLayer" class="chat-wrapper"/>
       <image-previewer />
     </div>
@@ -51,11 +65,12 @@ export default {
   title: 'TIMSDK DEMO',
   data () {
     return {
-      msg: 'Hello vue-baberrage',
-      barrageIsShow: true,
-      currentId : 0,
-      barrageLoop: false,
-      barrageList: []
+        msg: 'Hello vue-baberrage',
+        barrageIsShow: true,
+        currentId : 0,
+        barrageLoop: false,
+        barrageList: [],
+        showChatRoom: false,
     }
   },
   components: {
@@ -435,6 +450,65 @@ body {
     height: 45px;
     align-items: center;
   }
+}
+
+.chatroom{
+    height: 100%;
+    width: 700px;
+    position: fixed;
+    right: 0%;
+    top: 0%;
+    float: right;
+    z-index: 999;
+    overflow: auto;
+}
+
+.chatroom-enter-active {
+    transition: all 0.5s ease;
+}
+.chatroom-leave-active {
+    transition: all .5s ease;
+}
+.chatroom-enter, .chatroom-leave-to{
+    transform: translateX(50px);
+    opacity: 0;
+}
+
+.chatroom-float{
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  float: right;
+  position: fixed;
+  top: 50%;
+  right: 2%;
+  z-index: 999;
+}
+
+.float{
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
+  float: right;
+  position: fixed;
+  top: 50%;
+  right: 360px;
+  z-index: 999;
+}
+
+.float-enter-active {
+  transition: all .8s ease;
+}
+.float-enter, .float-leave-to{
+  transform: translateX(-60px);
+  opacity: 0;
+}
+
+.wrap {
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* 设置滚动条的样式 */
