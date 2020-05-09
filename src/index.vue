@@ -75,7 +75,7 @@ export default {
   },
   components: {
     Login,
-    SideBar,
+    //SideBar,
     CurrentConversation,
     ImagePreviewer,
     CallLayer,

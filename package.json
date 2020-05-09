@@ -9,6 +9,7 @@
     "lint": "node node_modules/@vue/cli-service/bin/vue-cli-service.js lint src --ext .vue,.js --fix"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "core-js": "^2.6.11",
     "cos-js-sdk-v5": "^0.5.22",
     "element-ui": "^2.13.0",
