@@ -155,7 +155,7 @@ export default {
     enterRoom() {
       this.$refs['login'].validate(valid => {
         if (valid) {
-           axios.get('http://localhost:8000/Room/SignIn',{
+           axios.get('http://47.103.30.166:8020/Room/SignIn',{
             params:{
               room_id: this.form.room,
               password: this.form.password
@@ -215,7 +215,7 @@ export default {
     },
     login() {
       this.loading = true
-      axios.get('http://localhost:8000/User/SignIn',{
+      axios.get('http://47.103.30.166:8020/User/SignIn',{
             params:{
               account: this.form.userID,
               password: this.form.password
