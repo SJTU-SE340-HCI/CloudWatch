@@ -41,6 +41,9 @@
       </transition>
       <call-layer ref="callLayer" class="chat-wrapper"/>
       <image-previewer />
+      <div class="bottom">
+        <message-send-box />
+      </div>
     </div>
     <div class="bg">
     </div>
@@ -59,6 +62,7 @@ import CallLayer from './components/message/call-layer'
 import { ACTION } from './utils/trtcCustomMessageMap'
 import MTA from './utils/mta'
 import { MESSAGE_TYPE } from 'vue-baberrage'
+import MessageSendBox from "./components/message/message-bottom-send-box"
 
 export default {
   title: 'TIMSDK DEMO',
@@ -73,6 +77,7 @@ export default {
     }
   },
   components: {
+    MessageSendBox,
     Login,
     //SideBar,
     CurrentConversation,
@@ -493,6 +498,12 @@ body {
   top: 50%;
   right: 360px;
   z-index: 999;
+}
+
+.bottom{
+  position: fixed;
+  bottom: 0%;
+
 }
 
 .float-enter-active {

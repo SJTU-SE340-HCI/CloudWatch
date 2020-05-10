@@ -85,8 +85,8 @@ export default {
 
     createStream(userId) {
       const localStream = TRTC.createStream({ userId, audio: true, video: false });
-      this.localStream =localStream 
-     
+      this.localStream =localStream
+
       localStream
         .initialize()
         .catch(error => {
@@ -120,7 +120,7 @@ export default {
         this.$nextTick(()=>{
         remoteStream.play('remote_stream'+ remoteStream.getId());
         },1000)
-        
+
       })
 
     },
