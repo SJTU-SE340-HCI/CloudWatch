@@ -102,7 +102,7 @@ public class VideoController {
             System.out.print(time);
         }
 
-        if((curTime-time)>3&&(curTime-time)<7){
+        if((curTime-time)>0&&(curTime-time)<4){
             oldtime=time;
             String sql = "update room set VideoTime = "+curTime+" where RoomId ='" + roomid + "'";
             stmt.executeUpdate(sql);
@@ -111,7 +111,7 @@ public class VideoController {
             conn.close();
             return curTime;
         }
-        else if ((time-oldtime)>3&&(time-oldtime)<7){
+        else if ((time-oldtime)>0&&(time-oldtime)<4){
             String sql = "update room set VideoTime = "+curTime+" where RoomId ='" + roomid + "'";
             stmt.executeUpdate(sql);
             rs.close();
@@ -121,7 +121,7 @@ public class VideoController {
         }
         else {
             curTime=time;
-            oldtime=time-5;
+            oldtime=time-2;
         }
 
         System.out.print(curTime+"\n");

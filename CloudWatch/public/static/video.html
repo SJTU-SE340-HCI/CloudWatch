@@ -84,9 +84,9 @@
         //if(player.paused){
         //  setInterval(pause,5000);
         //}
-        checkplayer();
+        //checkplayer();
         if (Math.abs(data-time)>0.5){
-          player.currentTime(data);
+          player.currentTime(data+1);
         }
       }
 
@@ -110,7 +110,7 @@
           //setInterval(function () {alert("test");},300s0);
           //setInterval("playvideo()",5000);
           //player.on('play',setInterval(function () {alert("test");},3000));
-          player.on('playing',setInterval(playvideo,5000));
+          player.on('playing',setInterval(playvideo,2000));
 
         }
         else
