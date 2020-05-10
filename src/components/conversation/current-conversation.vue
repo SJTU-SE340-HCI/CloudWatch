@@ -26,6 +26,9 @@
       <div class="footer" v-if="showMessageSendBox" >
         <message-send-box/>
       </div>
+      <div>
+        <VoiceCommunicate></VoiceCommunicate>
+      </div>
     </div>
     <div class="profile" v-if="showConversationProfile" >
       <conversation-profile/>
@@ -41,13 +44,16 @@ import MessageSendBox from '../message/message-send-box'
 import MessageItem from '../message/message-item'
 import ConversationProfile from './conversation-profile.vue'
 import MemberProfileCard from '../group/member-profile-card'
+import VoiceCommunicate from '../../components/voice'
+
 export default {
   name: 'CurrentConversation',
   components: {
     MessageSendBox,
     MessageItem,
     ConversationProfile,
-    MemberProfileCard
+    MemberProfileCard,
+    VoiceCommunicate
   },
   data() {
     return {
