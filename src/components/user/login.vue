@@ -161,26 +161,27 @@ export default {
               password: this.form.password
             }
           }).then(res=>{
-            var signInRes=res.data;
-            if(signInRes==="invalid room")
+            var signInRes=res.data
+            if(signInRes==='invalid room')
             {
               this.$store.commit('showMessage', {
                 type: 'error',
                 message: '房间不存在'
               })
-              return;
+              this.loading = false
+              return
             }else{
-              if(signInRes==="invalid password")
+              if(signInRes==='invalid password')
               {
                 this.$store.commit('showMessage', {
                   type: 'error',
                   message: '密码不正确'
                 })
-                return;
+                this.loading = false
+                return
               }
               else{
                 this.tim.getGroupList().then((response) => {
-                  console.log(response)
                   for (var group of response.data.groupList) {
                     if (group.groupID == this.form.room) {
                       this.enterRoomSuccess(group.groupID)
@@ -191,10 +192,8 @@ export default {
                   this.tim.joinGroup({
                     groupID: this.form.room
                   }).then((response) => {
-                    console.log(response)
                     this.enterRoomSuccess(response.data.group.groupID)
-                  }).catch((error) => {
-                    console.log(error)
+                  }).catch(() => {
                     this.tim.createGroup({
                       groupID: this.form.room,
                       name: this.form.room,
@@ -203,7 +202,10 @@ export default {
                     }).then((response) => {
                       this.enterRoomSuccess(response.data.group.groupID)
                     }).catch((error) => {
-                      console.log(error)
+                      this.$store.commit('showMessage', {
+                        type: 'error',
+                        message: error
+                      })
                     })
                   })
                 })
@@ -221,22 +223,24 @@ export default {
               password: this.form.password
             }
           }).then(res=>{
-            var signInRes=res.data;
-            if(signInRes==="invalid account")
+            var signInRes=res.data
+            if(signInRes==='invalid account')
             {
               this.$store.commit('showMessage', {
                 type: 'error',
                 message: '帐号不存在'
               })
-              return;
+              this.loading = false
+              return
             }else{
-              if(signInRes==="invalid password")
+              if(signInRes==='invalid password')
               {
                 this.$store.commit('showMessage', {
                   type: 'error',
                   message: '密码不正确'
                 })
-                return;
+                this.loading = false
+                return
               }
               else{
                 this.tim
