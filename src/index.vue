@@ -8,8 +8,7 @@
       v-else
       v-loading="showLoading"
       element-loading-text="正在拼命初始化..."
-      element-loading-background="rgba(0, 0, 0, 0.8)"
-    >
+      element-loading-background="rgba(0, 0, 0, 0.8)">
       <vue-baberrage
               :isShow= "barrageIsShow"
               :barrageList = "barrageList"
@@ -43,6 +42,9 @@
       <call-layer ref="callLayer" class="chat-wrapper"/>
       <image-previewer />
     </div>
+    <div v-show="showChatRoom">
+          <VoiceCommunicate></VoiceCommunicate>
+      </div>
     <div class="bg">
     </div>
   </div>
@@ -60,6 +62,7 @@ import CallLayer from './components/message/call-layer'
 import { ACTION } from './utils/trtcCustomMessageMap'
 import MTA from './utils/mta'
 import { MESSAGE_TYPE } from 'vue-baberrage'
+import VoiceCommunicate from './components/voice'
 
 export default {
   title: 'TIMSDK DEMO',
@@ -79,6 +82,7 @@ export default {
     CurrentConversation,
     ImagePreviewer,
     CallLayer,
+    VoiceCommunicate
   },
 
   computed: {

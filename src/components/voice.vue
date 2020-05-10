@@ -13,7 +13,6 @@
 <script>
 import TRTC from 'trtc-js-sdk'
 import {TEST_ACCOUNT} from '../const/account_dev'
-import LibGenerateTestUserSig from '../../public/debug/GenerateTestUserSig'
 export default {
   name: 'voiceCommunicate',
   components: {
@@ -137,6 +136,8 @@ export default {
     },
 
     signOut() {
+      this.isSignUp=false;
+      this.remoteVideo=[];
       this.client
       .leave()
       .then(() => {
@@ -160,7 +161,7 @@ export default {
             '\r\n\r\nPlease configure your SDKAPPID/SECRETKEY in js/debug/GenerateTestUserSig.js'
         );
       }
-      const generator = new LibGenerateTestUserSig(SDKAPPID, SECRETKEY, EXPIRETIME);
+      const generator = new window.LibGenerateTestUserSig(SDKAPPID, SECRETKEY, EXPIRETIME);
       const userSig = generator.genTestUserSig(USERID);
       return {
         sdkAppId: SDKAPPID,
