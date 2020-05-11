@@ -54,7 +54,7 @@
   function CreateRoom() {
     $.ajax({
       type: 'GET',
-      url: 'http://localhost:8080/videoroom',
+      url: 'http://47.103.30.166:8020/videoroom',
       success: function (result) {
         alert("创建房间成功！\n房间号：" + result);
       }
@@ -74,7 +74,7 @@
     var id = document.getElementById("roomid").value;
     $.ajax({
       type: 'POST',
-      url: 'http://localhost:8080/videoroom/play',
+      url: 'http://47.103.30.166:8020/videoroom/play',
       async: false,
       data: {
         'roomid': id,
@@ -98,7 +98,7 @@
     var id = document.getElementById("roomid").value;
     $.ajax({
       type: 'POST',
-      url: 'http://localhost:8080/videoroom/room',
+      url: 'http://47.103.30.166:8020/videoroom/room',
       async: false,
       data: {
         'roomid': id,
