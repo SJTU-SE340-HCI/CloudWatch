@@ -15,35 +15,39 @@
               :loop = "barrageLoop"
       >
       </vue-baberrage>
-      <transition name="chatroom">
+      <div>
+        <transition name="chatroom">
           <div class="chat-wrapper" v-if="showChatRoom">
-              <el-row>
-                  <!--          <el-col :xs="10" :sm="10" :md="8" :lg="8" :xl="7">-->
-                  <!--            <side-bar />-->
-                  <!--          </el-col>-->
-                  <el-col :xs="14" :sm="14" :md="24" :lg="16" :xl="17">
-                      <player/>
-                      <current-conversation />
-                  </el-col>
-              </el-row>
+            <el-row>
+              <!--          <el-col :xs="10" :sm="10" :md="8" :lg="8" :xl="7">-->
+              <!--            <side-bar />-->
+              <!--          </el-col>-->
+              <el-col :xs="14" :sm="14" :md="24" :lg="16" :xl="17">
+                <current-conversation />
+              </el-col>
+            </el-row>
           </div>
-      </transition>
-      <transition name="chatroom">
-        <div class="float wrap" style="cursor: pointer"  @click="showChatRoom = !showChatRoom"
-              v-show="showChatRoom">
-          <i class="iconfont icon-youjiantou"></i>
+        </transition>
+        <transition name="chatroom">
+          <div class="float wrap" style="cursor: pointer"  @click="showChatRoom = !showChatRoom"
+               v-show="showChatRoom">
+            <i class="iconfont icon-youjiantou"></i>
+          </div>
+        </transition>
+        <transition name="float">
+          <div  class="chatroom-float wrap" style="cursor: pointer" @click="showChatRoom = !showChatRoom"
+                v-show="!showChatRoom">
+            <i class="iconfont icon-zuojiantou"></i>
+          </div>
+        </transition>
+        <div class="player">
+          <player/>
         </div>
-      </transition>
-      <transition name="float">
-        <div  class="chatroom-float wrap" style="cursor: pointer" @click="showChatRoom = !showChatRoom"
-              v-show="!showChatRoom">
-          <i class="iconfont icon-zuojiantou"></i>
+        <call-layer ref="callLayer" class="chat-wrapper"/>
+        <image-previewer />
+        <div class="bottom">
+          <message-send-box />
         </div>
-      </transition>
-      <call-layer ref="callLayer" class="chat-wrapper"/>
-      <image-previewer />
-      <div class="bottom">
-        <message-send-box />
       </div>
     </div>
     <div class="bg">
@@ -448,6 +452,9 @@ body {
   width: $width;
   height: $height;
   max-width: 1280px;
+  position: fixed;
+  right: 0%;
+  z-index: 999;
 
   .official-link {
     display: flex;
@@ -500,14 +507,20 @@ body {
   float: right;
   position: fixed;
   top: 50%;
-  right: 360px;
+  right: 10%;
   z-index: 999;
 }
 
 .bottom{
   position: fixed;
   bottom: 0%;
+}
 
+.player{
+  position: fixed;
+  bottom: 10%;
+  left: 27%;
+  z-index: 1;
 }
 
 .float-enter-active {
