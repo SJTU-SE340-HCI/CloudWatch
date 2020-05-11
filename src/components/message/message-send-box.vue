@@ -10,10 +10,13 @@
         <i class="iconfont icon-smile" slot="reference" title="发表情"></i>
       </el-popover>
       <i class="iconfont icon-tupian" title="发图片" @click="handleSendImageClick"></i>
-      <i class="el-icon-camera" title="发视频" @click="handleSendVideoClick"></i>
-      <i class="iconfont icon-wenjian" title="发文件" @click="handleSendFileClick"></i>
-      <i class="iconfont icon-zidingyi" title="发自定义消息" @click="sendCustomDialogVisible = true"></i>
-      <i class="el-icon-video-camera" v-if="currentConversationType === 'C2C'&& toAccount !== userID" title="视频通话" @click="videoCall"></i>
+<!--      <i class="el-icon-camera" title="发视频" @click="handleSendVideoClick"></i>-->
+<!--      <i class="iconfont icon-wenjian" title="发文件" @click="handleSendFileClick"></i>-->
+<!--      <i class="iconfont icon-zidingyi" title="发自定义消息" @click="sendCustomDialogVisible = true"></i>-->
+<!--      <i class="el-icon-video-camera" v-if="currentConversationType === 'C2C'&& toAccount !== userID" title="视频通话" @click="videoCall"></i>-->
+      <div class="voice">
+        <VoiceCommunicate></VoiceCommunicate>
+      </div>
     </div>
     <el-dialog title="发自定义消息" :visible.sync="sendCustomDialogVisible" width="30%">
       <el-form label-width="100px">
@@ -101,6 +104,7 @@ import {
   Tooltip,
 } from 'element-ui'
 import { emojiMap, emojiName, emojiUrl } from '../../utils/emojiMap'
+import VoiceCommunicate from '../voice'
 
 export default {
   name: 'message-send-box',
@@ -114,6 +118,7 @@ export default {
     ElRadioGroup: RadioGroup,
     ElRadio: Radio,
     ElTooltip: Tooltip,
+    VoiceCommunicate: VoiceCommunicate
   },
   data() {
     return {
@@ -492,5 +497,10 @@ textarea {
     padding: 6px 6px 4px 4px;
     border-radius: 50%;
   }
+}
+
+.voice {
+  width: 15%;
+  float: left
 }
 </style>

@@ -10,6 +10,9 @@
         <i class="iconfont icon-smile" slot="reference" title="发表情"></i>
       </el-popover>
       <i class="el-icon-video-camera" v-if="currentConversationType === 'C2C'&& toAccount !== userID" title="视频通话" @click="videoCall"></i>
+      <div class="voice">
+        <VoiceCommunicate></VoiceCommunicate>
+      </div>
     </div>
     <el-popover
       trigger="manual"
@@ -80,6 +83,7 @@ import {
   Tooltip,
 } from 'element-ui'
 import { emojiMap, emojiName, emojiUrl } from '../../utils/emojiMap'
+import VoiceCommunicate from '../voice'
 
 export default {
   name: 'message-send-box',
@@ -93,6 +97,7 @@ export default {
     ElRadioGroup: RadioGroup,
     ElRadio: Radio,
     ElTooltip: Tooltip,
+    VoiceCommunicate: VoiceCommunicate,
   },
   data() {
     return {
@@ -425,6 +430,7 @@ export default {
 .send-header-bar {
   box-sizing: border-box;
   padding: 3px 0 0 0;
+  flex-direction: row,
 }
 
 .send-header-bar i {
@@ -471,5 +477,10 @@ textarea {
     padding: 6px 6px 4px 4px;
     border-radius: 50%;
   }
+}
+
+.voice {
+  width: 60%;
+  float: left
 }
 </style>
