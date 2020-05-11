@@ -22,6 +22,7 @@
                   <!--            <side-bar />-->
                   <!--          </el-col>-->
                   <el-col :xs="14" :sm="14" :md="24" :lg="16" :xl="17">
+                      <player/>
                       <current-conversation />
                   </el-col>
               </el-row>
@@ -64,6 +65,8 @@ import MTA from './utils/mta'
 import { MESSAGE_TYPE } from 'vue-baberrage'
 import MessageSendBox from "./components/message/message-bottom-send-box"
 
+import Player from './components/first.vue'
+
 export default {
   title: 'TIMSDK DEMO',
   data () {
@@ -83,6 +86,7 @@ export default {
     CurrentConversation,
     ImagePreviewer,
     CallLayer,
+      Player,
   },
 
   computed: {
@@ -340,8 +344,8 @@ export default {
       const groupTips = messageList.filter(message => {
         return this.currentConversation.conversationID === message.conversationID &&
           message.type === this.TIM.TYPES.MSG_GRP_TIP &&
-          (message.payload.operationType === this.TIM.TYPES.GRP_TIP_MBR_QUIT || 
-          message.payload.operationType === this.TIM.TYPES.GRP_TIP_MBR_KICKED_OUT) 
+          (message.payload.operationType === this.TIM.TYPES.GRP_TIP_MBR_QUIT ||
+          message.payload.operationType === this.TIM.TYPES.GRP_TIP_MBR_KICKED_OUT)
       })
       // 清理当前会话的群成员列表
       if (groupTips.length > 0) {
