@@ -1,12 +1,11 @@
 <template>
   <div id="app">
-    <el-button type="primary" @click="createClient">开麦</el-button>
-    <el-button type="primary" @click="signOut">关麦</el-button>
+    <el-button type="primary" @click="createClient" v-if="!isLink">连麦</el-button>
+    <el-button type="primary" @click="signOut" v-else>退出语音</el-button>
     <div id='local_stream' class='video'></div>
     <template v-for="item in remoteVideo" >
       <div :id="'remote_stream'+ item" class='video' :key='item'></div>
     </template>
-    {{remoteVideo}}
   </div>
 </template>
 
@@ -26,13 +25,14 @@ export default {
       localStream: '',
       roomId: '1',
       remoteVideo: [],
-      isSignUp: false
+      isSignUp: false,
+      isLink: false,
     }
   },
   created() {
   },
   methods: {
-        voicecommunicate(){
+        voicecommunicate() {
             if(this.isOpenVoice===false)
             {
                 this.isOpenVoice=true
@@ -73,6 +73,7 @@ export default {
             this.createStream(this.userId)
             // //播放远端流
             this.playRemoteStream(this.client)
+            this.isLink = true
           })
           .catch(error => {
             console.error('进房失败 ' + error);
@@ -143,6 +144,7 @@ export default {
       .then(() => {
         // 退房成功，可再次调用client.join重新进房开启新的通话。
         console.log('退出直播间')
+        this.isLink = false
       })
       .catch(error => {
         console.error('退出直播间失败 ' + error);
