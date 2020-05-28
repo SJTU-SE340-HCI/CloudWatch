@@ -59,7 +59,7 @@
 import { Notification } from 'element-ui'
 import { mapState } from 'vuex'
 import CurrentConversation from './components/conversation/current-conversation'
-import SideBar from './components/layout/side-bar'
+//import SideBar from './components/layout/side-bar'
 import Login from './components/user/login'
 import ImagePreviewer from './components/message/image-previewer.vue'
 import { translateGroupSystemNotice } from './utils/common'
@@ -67,7 +67,7 @@ import CallLayer from './components/message/call-layer'
 import { ACTION } from './utils/trtcCustomMessageMap'
 import MTA from './utils/mta'
 import { MESSAGE_TYPE } from 'vue-baberrage'
-import MessageSendBox from "./components/message/message-bottom-send-box"
+import MessageSendBox from './components/message/message-bottom-send-box'
 
 import Player from './components/first.vue'
 
@@ -514,6 +514,8 @@ body {
 .bottom{
   position: fixed;
   bottom: 0%;
+  width: 100%;
+  left: 0%;
 }
 
 .player{

@@ -1,19 +1,5 @@
 <template>
   <div id="message-send-box-wrapper" :style="focus ? {'backgroundColor': 'white'} : {}" @drop="dropHandler">
-    <div class="send-header-bar">
-      <el-popover placement="top" width="400" trigger="click">
-        <div class="emojis">
-          <div v-for="item in emojiName" class="emoji" :key="item" @click="chooseEmoji(item)">
-            <img :src="emojiUrl + emojiMap[item]" style="width:30px;height:30px" />
-          </div>
-        </div>
-        <i class="iconfont icon-smile" slot="reference" title="发表情"></i>
-      </el-popover>
-      <i class="el-icon-video-camera" v-if="currentConversationType === 'C2C'&& toAccount !== userID" title="视频通话" @click="videoCall"></i>
-      <div class="voice">
-        <VoiceCommunicate></VoiceCommunicate>
-      </div>
-    </div>
     <el-popover
       trigger="manual"
       v-model="showAtGroupMember"
@@ -31,6 +17,17 @@
       </el-radio-group>
     </el-popover>
     <div class="bottom">
+      <div class="voice">
+        <VoiceCommunicate></VoiceCommunicate>
+      </div>
+      <el-popover placement="top" width="600" trigger="click">
+        <div class="emojis">
+          <div v-for="item in emojiName" class="emoji" :key="item" @click="chooseEmoji(item)">
+            <img :src="emojiUrl + emojiMap[item]" style="width:30px;height:30px" />
+          </div>
+        </div>
+        <i class="iconfont icon-smile emoji" slot="reference" title="发表情"></i>
+      </el-popover>
       <textarea
         ref="text-input"
         rows="1"
@@ -46,27 +43,17 @@
         @keydown.down.stop="handleDown"
       >
       </textarea>
+      <el-tooltip
+              class="item"
+              effect="dark"
+              content="按Enter发送消息，Ctrl+Enter换行"
+              placement="left-start"
+      >
+        <div class="btn-send" @click="sendTextMessage">
+          <div class="tim-icon-send"></div>
+        </div>
+      </el-tooltip>
     </div>
-    <el-tooltip
-            class="item"
-            effect="dark"
-            content="按Enter发送消息，Ctrl+Enter换行"
-            placement="left-start"
-    >
-      <div class="btn-send" @click="sendTextMessage">
-        <div class="tim-icon-send"></div>
-      </div>
-    </el-tooltip>
-    <input
-      type="file"
-      id="imagePicker"
-      ref="imagePicker"
-      accept=".jpg, .jpeg, .png, .gif"
-      @change="sendImage"
-      style="display:none"
-    />
-    <input type="file" id="filePicker" ref="filePicker" @change="sendFile" style="display:none" />
-    <input type="file" id="videoPicker" ref="videoPicker" @change="sendVideo" style="display:none" accept=".mp4"/>
   </div>
 </template>
 
@@ -409,7 +396,11 @@ export default {
 #message-send-box-wrapper {
   box-sizing: border-box;
   overflow: hidden;
+  padding: 26px;
+}
+.emoji {
   padding: 8px;
+  font-size: 20px;
 }
 
 .emojis {
@@ -450,7 +441,7 @@ textarea {
 
 .text-input {
   font-size: 16px;
-  width: 100%;
+  width: 72%;
   box-sizing: box-sizing;
   border: none;
   outline: none;
@@ -465,7 +456,9 @@ textarea {
 
 .bottom {
   padding-top: 10px;
-  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
   .btn-send {
     cursor: pointer;
@@ -480,7 +473,6 @@ textarea {
 }
 
 .voice {
-  width: 60%;
-  float: left
+  padding: 4px;
 }
 </style>
