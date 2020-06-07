@@ -9,13 +9,14 @@
       v-loading="showLoading"
       element-loading-text="正在拼命初始化..."
       element-loading-background="rgba(0, 0, 0, 0.8)">
-      <vue-baberrage
-              :isShow= "barrageIsShow"
-              :barrageList = "barrageList"
-              :loop = "barrageLoop"
-              class="baberrage"
-      >
-      </vue-baberrage>
+      <div class="baberrage">
+        <vue-baberrage
+                :isShow= "barrageIsShow"
+                :barrageList = "barrageList"
+                :loop = "barrageLoop"
+        >
+        </vue-baberrage>
+      </div>
       <div>
         <transition name="chatroom">
           <div class="chat-wrapper" v-if="showChatRoom">
@@ -437,6 +438,14 @@ body {
   }
 }
 
+.baberrage {
+  width: 100%;
+  height: 30%;
+  margin: 0;
+  position: relative;
+  z-index: 3;
+}
+
 #wrapper {
   display: flex;
   justify-content: center;
@@ -555,7 +564,7 @@ body {
   height: 0%;
   width: 100%;
   height: 90%;
-  z-index: 999;
+  z-index: 2;
 }
 
 .float-enter-active {
@@ -581,9 +590,6 @@ body {
   z-index: 999;
 }
 
-.baberrage {
-  z-index: 999;
-}
 /* 设置滚动条的样式 */
 ::-webkit-scrollbar {
   width: 3px;
