@@ -8,7 +8,8 @@
       :model="form"
       label-width="0"
       style="width:100%;"
-      @keydown.enter.native="handleEnter">
+      @keydown.enter.native="handleEnter"
+    >
       <!-- Github登录方式 -->
       <!--el-form-item prop="userID" v-if="isLogin">
         <el-select v-model="form.userID" class="user-selector">
@@ -37,7 +38,7 @@
         ></el-input>
       </el-form-item>
     </el-form>
-    
+
     <el-form
       v-else
       ref="login"
@@ -45,7 +46,8 @@
       :model="form"
       label-width="0"
       style="width:100%;"
-      @keydown.enter.native="handleEnter">
+      @keydown.enter.native="handleEnter"
+    >
       <el-form-item prop="room">
         <el-input v-model="form.room" placeholder="请输入房间号" type="text" clearable></el-input>
       </el-form-item>
@@ -67,224 +69,228 @@
       v-if="isLogin"
     >登录</el-button>
     <el-button
-            type="primary"
-            @click="enterRoom"
-            style="width:100%; margin-top: 6px;"
-            :loading="loading"
-            v-else
+      type="primary"
+      @click="enterRoom"
+      style="width:100%; margin-top: 6px;"
+      :loading="loading"
+      v-else
     >进入房间</el-button>
   </div>
 </template>
 
 <script>
-import { Form, FormItem, Select, Option } from 'element-ui'
-import logo from '../../assets/image/logo.png'
-import axios from 'axios'
- import {mapState} from 'vuex'
+import { Form, FormItem, Select, Option } from "element-ui";
+import logo from "../../assets/image/logo.png";
+import axios from "axios";
+import { mapState } from "vuex";
 export default {
-  name: 'Login',
+  name: "Login",
   components: {
     ElForm: Form,
     ElFormItem: FormItem,
     ElSelect: Select,
-    ElOption: Option,
+    ElOption: Option
   },
   data() {
     const checkUserID = (rule, value, callback) => {
       if (!/^[a-zA-Z][a-zA-Z0-9_]{3,23}$/.test(value)) {
-        callback(new Error('不合法（字母开头+字母/数字，长度4-24)'))
+        callback(new Error("不合法（字母开头+字母/数字，长度4-24)"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     const checkRoomNumber = (rule, value, callback) => {
       if (!/^[1-9][0-9]{0,9}$/.test(value)) {
-        callback(new Error('不合法自然数，长度1-10'))
+        callback(new Error("不合法自然数，长度1-10"));
       } else {
-        callback()
+        callback();
       }
-    }
+    };
     return {
       form: {
-        userID: '',
-        password: '',
-        room: '',
+        userID: "",
+        password: "",
+        room: ""
       },
       rules: {
         userID: [
-          { required: true, message: '请输入 userID', trigger: 'blur' },
-          { validator: checkUserID, trigger: 'blur' }
+          { required: true, message: "请输入 userID", trigger: "blur" },
+          { validator: checkUserID, trigger: "blur" }
         ],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         room: [
-          { required: true,  message: '请输入房间号', trigger: 'blur' },
-          { validator: checkRoomNumber, trigger: 'blur' }
+          { required: true, message: "请输入房间号", trigger: "blur" },
+          { validator: checkRoomNumber, trigger: "blur" }
         ]
       },
       logo: logo,
       registerVisible: false,
       loading: false,
       isLogin: true
-    }
+    };
   },
   methods: {
     handleEnter() {
       if (this.isLogin) {
-        this.submit()
+        this.submit();
       } else {
-        this.enterRoom()
+        this.enterRoom();
       }
     },
     submit() {
-      this.$refs['login'].validate(valid => {
+      this.$refs["login"].validate(valid => {
         if (valid) {
-          this.login()
+          this.login();
         }
-      })
+      });
     },
     enterRoomSuccess(groupID) {
-      this.$store.dispatch(
-              'checkoutConversation',
-              'GROUP' + groupID
-      )
-      this.$store.commit('toggleIsLogin', true)
-      this.$store.commit('showMessage', {
-        type: 'success',
-        message: '进入房间成功'
-      })
+      this.$store.dispatch("checkoutConversation", "GROUP" + groupID);
+      this.$store.commit("toggleIsLogin", true);
+      this.$store.commit("showMessage", {
+        type: "success",
+        message: "进入房间成功"
+      });
     },
     enterRoom() {
-      this.$refs['login'].validate(valid => {
+      this.$refs["login"].validate(valid => {
         if (valid) {
-           axios.get('http://localhost:8020/Room/SignIn',{
-            params:{
-              room_id: this.form.room,
-              password: this.form.password
-            }
-          }).then(res=>{
-            var signInRes=res.data
-            if(signInRes==='invalid room')
-            {
-              this.$store.commit('showMessage', {
-                type: 'error',
-                message: '房间不存在'
-              })
-              this.loading = false
-              return
-            }else{
-              if(signInRes==='invalid password')
-              {
-                this.$store.commit('showMessage', {
-                  type: 'error',
-                  message: '密码不正确'
-                })
-                this.loading = false
-                return
+          axios
+            .get("http://47.103.30.166:8020/Room/SignIn", {
+              params: {
+                room_id: this.form.room,
+                password: this.form.password
               }
-              else{
-                // get sdk room id from server
-                axios.get('http://localhost:8020/Room/findById',{
-                  params:{
-                    room_id: this.form.room
-                  }}).then(res=>{
-                    this.$store.commit('changeRoom',res.data)
-                  })
-
-                this.tim.getGroupList().then((response) => {
-                  for (var group of response.data.groupList) {
-                    if (group.groupID == this.form.room) {
-                      this.enterRoomSuccess(group.groupID)
-                      return
-                    }
-                  }
-
-                  this.tim.joinGroup({
-                    groupID: this.form.room
-                  }).then((response) => {
-                    this.enterRoomSuccess(response.data.group.groupID)
-                  }).catch(() => {
-                    this.tim.createGroup({
-                      groupID: this.form.room,
-                      name: this.form.room,
-                      type: this.TIM.TYPES.GRP_PUBLIC,
-                      joinOption: this.TIM.TYPES.JOIN_OPTIONS_FREE_ACCESS
-                    }).then((response) => {
-                      this.enterRoomSuccess(response.data.group.groupID)
-                    }).catch((error) => {
-                      this.$store.commit('showMessage', {
-                        type: 'error',
-                        message: error
-                      })
+            })
+            .then(res => {
+              var signInRes = res.data;
+              if (signInRes === "invalid room") {
+                this.$store.commit("showMessage", {
+                  type: "error",
+                  message: "房间不存在"
+                });
+                this.loading = false;
+                return;
+              } else {
+                if (signInRes === "invalid password") {
+                  this.$store.commit("showMessage", {
+                    type: "error",
+                    message: "密码不正确"
+                  });
+                  this.loading = false;
+                  return;
+                } else {
+                  // get sdk room id from server
+                  axios
+                    .get("http://47.103.30.166:8020/Room/findById", {
+                      params: {
+                        room_id: this.form.room
+                      }
                     })
-                  })
-                })
+                    .then(res => {
+                      this.$store.commit("changeRoom", res.data);
+                    });
+
+                  this.tim.getGroupList().then(response => {
+                    for (var group of response.data.groupList) {
+                      if (group.groupID == this.form.room) {
+                        this.enterRoomSuccess(group.groupID);
+                        return;
+                      }
+                    }
+
+                    this.tim
+                      .joinGroup({
+                        groupID: this.form.room
+                      })
+                      .then(response => {
+                        this.enterRoomSuccess(response.data.group.groupID);
+                      })
+                      .catch(() => {
+                        this.tim
+                          .createGroup({
+                            groupID: this.form.room,
+                            name: this.form.room,
+                            type: this.TIM.TYPES.GRP_PUBLIC,
+                            joinOption: this.TIM.TYPES.JOIN_OPTIONS_FREE_ACCESS
+                          })
+                          .then(response => {
+                            this.enterRoomSuccess(response.data.group.groupID);
+                          })
+                          .catch(error => {
+                            this.$store.commit("showMessage", {
+                              type: "error",
+                              message: error
+                            });
+                          });
+                      });
+                  });
+                }
               }
+            });
         }
-      })
-        }
-      })
+      });
     },
     login() {
-      this.loading = true
-      axios.get('http://localhost:8020/User/SignIn',{
-            params:{
-              account: this.form.userID,
-              password: this.form.password
-            }
-          }).then(res=>{
-            var signInRes=res.data
-            if(signInRes==='invalid account')
-            {
-              this.$store.commit('showMessage', {
-                type: 'error',
-                message: '帐号不存在'
-              })
-              this.loading = false
-              return
-            }else{
-              if(signInRes==='invalid password')
-              {
-                this.$store.commit('showMessage', {
-                  type: 'error',
-                  message: '密码不正确'
-                })
-                this.loading = false
-                return
-              }
-              else{
-                this.tim
-              .login({
-                userID: this.form.userID,
-                userSig: window.genTestUserSig(this.form.userID).userSig
-              })
-              .then(() => {
-                this.loading = false
-                this.isLogin = false
-                this.$store.commit('startComputeCurrent')
-                this.$store.commit({
-                  type: 'GET_USER_INFO',
+      this.loading = true;
+      axios
+        .get("http://47.103.30.166:8020/User/SignIn", {
+          params: {
+            account: this.form.userID,
+            password: this.form.password
+          }
+        })
+        .then(res => {
+          var signInRes = res.data;
+          if (signInRes === "invalid account") {
+            this.$store.commit("showMessage", {
+              type: "error",
+              message: "帐号不存在"
+            });
+            this.loading = false;
+            return;
+          } else {
+            if (signInRes === "invalid password") {
+              this.$store.commit("showMessage", {
+                type: "error",
+                message: "密码不正确"
+              });
+              this.loading = false;
+              return;
+            } else {
+              this.tim
+                .login({
                   userID: this.form.userID,
-                  userSig: window.genTestUserSig(this.form.userID).userSig,
-                  sdkAppID: window.genTestUserSig('').SDKAppID
+                  userSig: window.genTestUserSig(this.form.userID).userSig
                 })
-                this.$store.commit('showMessage', {
-                  type: 'success',
-                  message: '登录成功'
+                .then(() => {
+                  this.loading = false;
+                  this.isLogin = false;
+                  this.$store.commit("startComputeCurrent");
+                  this.$store.commit({
+                    type: "GET_USER_INFO",
+                    userID: this.form.userID,
+                    userSig: window.genTestUserSig(this.form.userID).userSig,
+                    sdkAppID: window.genTestUserSig("").SDKAppID
+                  });
+                  this.$store.commit("showMessage", {
+                    type: "success",
+                    message: "登录成功"
+                  });
                 })
-              })
-              .catch(error => {
-                this.loading = false
-                this.$store.commit('showMessage', {
-                  message: '登录失败：' + error.message,
-                  type: 'error'
-                })
-              })
-              }
+                .catch(error => {
+                  this.loading = false;
+                  this.$store.commit("showMessage", {
+                    message: "登录失败：" + error.message,
+                    type: "error"
+                  });
+                });
             }
-          })
-    },
-  },
-}
+          }
+        });
+    }
+  }
+};
 </script>
 
 <style lang="stylus" scoped>
