@@ -12,6 +12,7 @@
 <script>
 import TRTC from 'trtc-js-sdk'
 import {TEST_ACCOUNT} from '../const/account_dev'
+ import {mapState} from 'vuex'
 export default {
   name: 'voiceCommunicate',
   components: {
@@ -23,7 +24,7 @@ export default {
       userToken: TEST_ACCOUNT.userToken,
       client: '',
       localStream: '',
-      roomId: '1',
+      roomId: this.$store.state.currentRoom.idTRTCRoom,
       remoteVideo: [],
       isSignUp: false,
       isLink: false,
@@ -64,6 +65,7 @@ export default {
 
     //加入房间
     joinRoom (roomId) {
+      console.log(roomId);
       if(!this.isSignUp) {
         this.client.join({ roomId })
           .then(() => {

@@ -80,6 +80,7 @@
 import { Form, FormItem, Select, Option } from 'element-ui'
 import logo from '../../assets/image/logo.png'
 import axios from 'axios'
+ import {mapState} from 'vuex'
 export default {
   name: 'Login',
   components: {
@@ -155,7 +156,7 @@ export default {
     enterRoom() {
       this.$refs['login'].validate(valid => {
         if (valid) {
-           axios.get('http://47.103.30.166:8020/Room/SignIn',{
+           axios.get('http://localhost:8020/Room/SignIn',{
             params:{
               room_id: this.form.room,
               password: this.form.password
@@ -181,6 +182,14 @@ export default {
                 return
               }
               else{
+                // get sdk room id from server
+                axios.get('http://localhost:8020/Room/findById',{
+                  params:{
+                    room_id: this.form.room
+                  }}).then(res=>{
+                    this.$store.commit('changeRoom',res.data)
+                  })
+
                 this.tim.getGroupList().then((response) => {
                   for (var group of response.data.groupList) {
                     if (group.groupID == this.form.room) {
@@ -217,7 +226,7 @@ export default {
     },
     login() {
       this.loading = true
-      axios.get('http://47.103.30.166:8020/User/SignIn',{
+      axios.get('http://localhost:8020/User/SignIn',{
             params:{
               account: this.form.userID,
               password: this.form.password
@@ -274,7 +283,7 @@ export default {
             }
           })
     },
-  }
+  },
 }
 </script>
 
