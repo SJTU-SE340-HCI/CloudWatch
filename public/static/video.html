@@ -13,25 +13,12 @@
   <script src="https://imgcache.qq.com/open/qcloud/video/tcplayer/tcplayer.v4.min.js"></script>
   <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
   <link rel="stylesheet" type="text/css" href="video.css">
-
 </head>
 <body>
 <!-- 设置播放器容器 -->
 <video id="player-container-id" preload="auto" width="1200" height="480" playsinline webkit-playsinline
        x5-playsinline></video>
-<!--
-<div style="text-align: center;margin-top: 5px">
-  <input type="button" value="创建房间" onclick="CreateRoom()"/>
-  <input type="button" value="进入房间" onclick="Show()"/>
-</div>
-<div style="text-align: center;margin-top: 5px;display: none" id="EnterRoom">
-  <p>房间号：<input type="text" style="width: 100px;height: 20px" id="roomid">
-    <input type="button" value="确定" onclick="EnterRoom()"/></p>
-<div style="text-align: center;margin-top: 5px;display: none" id="isInRoom">
-  <p>您已在房间内！</p>
-</div>
--->
-
+<input type="button" id="play" onclick="tongbu()" value="同步播放"/>
 <!--
 注意事项：
 * 播放器容器必须为 video 标签
@@ -46,11 +33,12 @@
     appID: "1301931404", /**请传入点播账号的appID 必须 */
     /**其他参数请在开发文档中查看 */
   });
+  var RoomID="x2RYna";
 
+/*
   function Show() {
     document.getElementById("EnterRoom").style.display = "block";
   }
-
   function CreateRoom() {
     $.ajax({
       type: 'GET',
@@ -60,9 +48,20 @@
       }
     })
   }
+*/
+  function GetRoomID() {
+      $.ajax({
+          type: 'GET',
+          url: '',
+          success: function (result) {
+              RoomID=result;
+          }
+      })
+}
 
-
-
+  function tongbu() {
+      player.on('playing',setInterval(playvideo,2000));
+  }
 
   function checkplayer() {
     var isPlay = player.onplaying();
@@ -72,13 +71,12 @@
   function playvideo() {
     var time = player.currentTime();
     //var id = document.getElementById("roomid").value;
-      var id = 123456;
     $.ajax({
       type: 'POST',
       url: 'http://47.103.30.166:8020/videoroom/play',
       async: false,
       data: {
-        'roomid': id,
+        'roomid': RoomID,
         'curTime': time,
       },
       success: function (data) {
@@ -94,16 +92,15 @@
 
     })
   }
-
+/*
   function EnterRoom() {
     //var id = document.getElementById("roomid").value;
-      var id = 123456;
     $.ajax({
       type: 'POST',
       url: 'http://47.103.30.166:8020/videoroom/room',
       async: false,
       data: {
-        'roomid': id,
+        'roomid': RoomID,
       },
       success: function (data) {
         if (data) {
@@ -121,7 +118,7 @@
       }
     })
   }
-
+*/
 
 </script>
 </body>
