@@ -9,12 +9,14 @@
       v-loading="showLoading"
       element-loading-text="正在拼命初始化..."
       element-loading-background="rgba(0, 0, 0, 0.8)">
-      <vue-baberrage
-              :isShow= "barrageIsShow"
-              :barrageList = "barrageList"
-              :loop = "barrageLoop"
-      >
-      </vue-baberrage>
+      <div class="baberrage">
+        <vue-baberrage
+                :isShow= "barrageIsShow"
+                :barrageList = "barrageList"
+                :loop = "barrageLoop"
+        >
+        </vue-baberrage>
+      </div>
       <div>
         <transition name="chatroom">
           <div class="chat-wrapper" v-if="showChatRoom">
@@ -40,12 +42,13 @@
             <i class="iconfont icon-zuojiantou"></i>
           </div>
         </transition>
-        <div class="player">
-          <player/>
-        </div>
+        <player class="player"/>
+        <el-button class="fullscreen" @click="screenfull">
+          全屏
+        </el-button>
         <call-layer ref="callLayer" class="chat-wrapper"/>
         <image-previewer />
-        <div class="bottom">
+        <div class="bottom" v-if="isFullscreen">
           <message-send-box />
         </div>
       </div>
@@ -70,6 +73,7 @@ import { MESSAGE_TYPE } from 'vue-baberrage'
 import MessageSendBox from './components/message/message-bottom-send-box'
 
 import Player from './components/first.vue'
+import screenfull from 'screenfull'
 
 export default {
   title: 'TIMSDK DEMO',
@@ -81,6 +85,7 @@ export default {
         barrageLoop: false,
         barrageList: [],
         showChatRoom: false,
+        isFullscreen: false,
     }
   },
   components: {
@@ -111,6 +116,11 @@ export default {
   mounted() {
     // 初始化监听器
     this.initListener()
+    window.onresize = () => {
+      if (this.checkFull()) {
+        this.isFullscreen = !this.isFullscreen
+      }
+    }
   },
 
   watch: {
@@ -361,19 +371,40 @@ export default {
       }
     },
     addToList(messageList) {
-        const groupMessageList = messageList.filter(
-            message => message.type === this.TIM.TYPES.MSG_TEXT
-        )
-        let avatar =  groupMessageList[0].avatar == '' ? 'https://imgcache.qq.com/open/qcloud/video/act/webim-avatar/avatar-2.png' : groupMessageList[0].avatar
-        let nick = groupMessageList[0].nick == '' ?  groupMessageList[0].from : groupMessageList[0].nick
-        this.barrageList.push({
-            id: ++this.currentId,
-            avatar: avatar,
-            msg: nick + ':' + groupMessageList[0].payload.text,
-            time: 10,
-            type: MESSAGE_TYPE.NORMAL,
-            extraWidth: 2,
+      const groupMessageList = messageList.filter(
+        message => message.type === this.TIM.TYPES.MSG_TEXT
+      )
+      let avatar = groupMessageList[0].avatar == '' ? 'https://imgcache.qq.com/open/qcloud/video/act/webim-avatar/avatar-2.png' : groupMessageList[0].avatar
+      let nick = groupMessageList[0].nick == '' ? groupMessageList[0].from : groupMessageList[0].nick
+      this.barrageList.push({
+        id: ++this.currentId,
+        avatar: avatar,
+        msg: nick + ':' + groupMessageList[0].payload.text,
+        time: 10,
+        type: MESSAGE_TYPE.NORMAL,
+        extraWidth: 2,
+      })
+    },
+    screenfull() {
+      if (!screenfull.isEnabled) {
+        this.$message({
+          message: 'Your browser does not work',
+          type: 'warning'
         })
+        return false
+      }
+      screenfull.toggle()
+    },
+    /**
+     * 是否全屏并按键ESC键的方法
+     */
+    checkFull() {
+      var isFull = document.fullscreenEnabled || window.fullScreen || document.webkitIsFullScreen || document.msFullscreenEnabled
+
+      if (isFull === undefined) {
+        isFull = false
+      }
+      return isFull
     }
   }
 }
@@ -405,6 +436,14 @@ body {
       box-sizing: border-box;
     }
   }
+}
+
+.baberrage {
+  width: 100%;
+  height: 30%;
+  margin: 0;
+  position: relative;
+  z-index: 3;
 }
 
 #wrapper {
@@ -516,13 +555,16 @@ body {
   bottom: 0%;
   width: 100%;
   left: 0%;
+  z-index: 999;
 }
 
 .player{
   position: fixed;
-  bottom: 10%;
-  left: 27%;
-  z-index: 1;
+  left: 0%;
+  height: 0%;
+  width: 100%;
+  height: 90%;
+  z-index: 2;
 }
 
 .float-enter-active {
@@ -538,6 +580,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.fullscreen {
+  position: fixed;
+  left: 1%;
+  top: 50%;
+  float: left;
+  z-index: 999;
 }
 
 /* 设置滚动条的样式 */

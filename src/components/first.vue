@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div id="detail">
     <div>
       <video width="640"
@@ -14,6 +15,10 @@
       <input type="button" id="play" v-on:click="tongbu" value="同步播放"/>
       <input type="button" id="shangchuan" v-on:click="shangchuan" value="上传本地视频"/>
     </div>
+=======
+  <div>
+    <iframe src="./static/video.html" scrolling="no" style="width: 100%; height: 100%; padding-top: 10px;" frameborder=”no”></iframe>
+>>>>>>> 4787be51e7d0b77ab67b66d09ca6aef9185af10b
   </div>
 </template>
 
