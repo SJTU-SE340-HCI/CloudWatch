@@ -11,13 +11,15 @@
       </video>
     </div>
     <div>
-      <input type="button" id="play" v-on:click="playvideo" value="同步播放"/>
+      <input type="button" id="play" v-on:click="tongbu" value="同步播放"/>
+      <input type="button" id="shangchuan" v-on:click="shangchuan" value="上传本地视频"/>
     </div>
   </div>
 </template>
 
 <script>
     import axios from 'axios'
+    import TcVod from 'vod-js-sdk-v6'
 
     export default {
         name: 'TcPlayer',
@@ -50,15 +52,14 @@
             playvideo() {
                 let self = this
                 let time = this.player.currentTime()
-                alert(time)
-                //var id = document.getElementById("roomid").value;
+                //alert(time)
                 axios.get('http://localhost:8020/videoroom/play',{
                     params:{
                         RoomId: this.RoomId,
                         curTime: time
                     }
                 }).then(function (response) {
-                    alert(response.data)
+                    //alert(response.data)
                     //if(player.paused){
                     //  setInterval(pause,5000);
                     //}
@@ -72,7 +73,14 @@
                 //alert('test')
                 this.player.on('playing',setInterval(this.playvideo,2000))
             },
+            getSignature() {
+                return axios.post(url).then(function (response) {
+                    return response.data.signature;
+                })
+            },
+            shangchuan() {
 
+            }
 
 
 
