@@ -96,9 +96,9 @@
 
 <style lang='stylus' scoped>
   .detail{
-    padding-left: 10%;
-    padding-right: 10%;
-    height: 95%;
+    padding-left: 15%;
+    padding-right: 15%;
+    height: 85%;
   }
   .full{
     padding: 0;
