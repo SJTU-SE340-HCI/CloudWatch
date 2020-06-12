@@ -42,7 +42,7 @@
             <i class="iconfont icon-zuojiantou"></i>
           </div>
         </transition>
-        <player class="player"/>
+        <player class="player" :isFullscreen="this.isFullscreen"/>
         <el-button class="fullscreen" @click="screenfull">
           全屏
         </el-button>
@@ -554,6 +554,7 @@ body {
   position: fixed;
   bottom: 0%;
   width: 100%;
+  height: 5%;
   left: 0%;
   z-index: 999;
 }

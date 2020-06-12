@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <el-button type="primary" @click="createClient" v-if="!isLink">连麦</el-button>
+    <el-button type="primary" @click="createClient" v-if="!isLink" size="mini">连麦</el-button>
     <el-button type="primary" @click="signOut" v-else>退出语音</el-button>
     <div id='local_stream' class='video'></div>
     <template v-for="item in remoteVideo" >
@@ -175,4 +175,3 @@ export default {
     }
 }
 </script>
-
