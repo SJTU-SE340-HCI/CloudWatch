@@ -1,6 +1,6 @@
 <template>
-    <div id="detail">
-        <div>
+    <div id="detail" :class="isFull? 'full':'detail'">
+        <div class="video">
             <video width="640"
                    :id="tcPlayerId"
                    height="480"
@@ -10,10 +10,8 @@
                    x5-playinline>
             </video>
         </div>
-        <div>
+        <div class="center bottoms">
             <input type="button" id="play" v-on:click="tongbu" value="同步播放"/>
-        </div>
-        <div>
             <input id="uploadVideoNow-file" type="file"  accept="video/*"/>
             <input type="button" value="上传本地视频" v-on:click="shangchuan"/>
         </div>
@@ -26,15 +24,22 @@
 
     export default {
         name: 'TcPlayer',
-        data () {
+        props: {
+            isFullscreen: Boolean,
+        },
+        computed: {
+            isFull: function () {
+                return this.isFullscreen
+            }
+        },
+        data() {
             return {
                 tcPlayerId: 'tcPlayer' + Date.now(),
                 player: null,
-                RoomId:'x2RYna',
-                url: ''
+                RoomId: 'x2RYna'
             }
         },
-        mounted () {
+        mounted() {
             let self = this
             this.$nextTick(() => {
                 setTimeout(() => {
@@ -46,7 +51,7 @@
         },
         methods: {
             // 初始化腾讯云播放器
-            getVideoLang (fileID, appID) {
+            getVideoLang(fileID, appID) {
                 const playerParam = {
                     fileID: fileID,
                     appID: appID
@@ -57,8 +62,8 @@
                 let self = this
                 let time = this.player.currentTime()
                 //alert(time)
-                axios.get('http://localhost:8020/videoroom/play',{
-                    params:{
+                axios.get('http://localhost:8020/videoroom/play', {
+                    params: {
                         RoomId: this.RoomId,
                         curTime: time
                     }
@@ -68,14 +73,14 @@
                     //  setInterval(pause,5000);
                     //}
                     //checkplayer();
-                    if (Math.abs(response.data-time)>0.5) {
-                        self.player.currentTime(response.data+1)
+                    if (Math.abs(response.data - time) > 0.5) {
+                        self.player.currentTime(response.data + 1)
                     }
                 })
             },
             tongbu() {
                 //alert('test')
-                this.player.on('playing',setInterval(this.playvideo,2000))
+                this.player.on('playing', setInterval(this.playvideo, 2000))
             },
 
             getSignature() {
@@ -94,10 +99,43 @@
                 const uploader = tcVod.upload({
                     mediaFile: mediaFile, // 媒体文件（视频或音频或图片），类型为 File
                 })
-                uploader.on('media_progress', function(info) {
+                uploader.on('media_progress', function (info) {
                     window.console.log(info.percent) // 进度
                 })
             }
         }
     }
 </script>
+
+
+<style lang='stylus' scoped>
+  .detail{
+    padding-left: 15%;
+    padding-right: 15%;
+    height: 85%;
+  }
+  .full{
+    padding: 0;
+    width: 100.5%;
+    left: -0.25%;
+    height: 95.25%;
+    top: -0.25%;
+
+  }
+  .video{
+    width: 100%;
+    height: 97%;
+    margin: 0;
+  }
+  .buttons{
+    height: 3%;
+  }
+  .tc-video-container{
+    width: 100%;
+    height: 100%;
+  }
+  .center{
+    justify-content: center;
+    align-items: center;
+  }
+</style>

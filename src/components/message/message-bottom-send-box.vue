@@ -396,26 +396,20 @@ export default {
 #message-send-box-wrapper {
   box-sizing: border-box;
   overflow: hidden;
-  padding: 26px;
+  padding: 10%;
 }
 .emoji {
   padding: 8px;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .emojis {
-  height: 160px;
+  height: 150px;
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   overflow-y: scroll;
-}
-
-.emoji {
-  height: 40px;
-  width: 40px;
-  box-sizing: border-box;
 }
 
 .send-header-bar {
@@ -455,7 +449,6 @@ textarea {
 }
 
 .bottom {
-  padding-top: 10px;
   display: flex;
   flex-direction: row;
   align-items: center;
