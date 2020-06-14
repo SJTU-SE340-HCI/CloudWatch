@@ -72,7 +72,7 @@ import MTA from './utils/mta'
 import { MESSAGE_TYPE } from 'vue-baberrage'
 import MessageSendBox from './components/message/message-bottom-send-box'
 
-import Player from './components/first.vue'
+import Player from './components/video/video.vue'
 import screenfull from 'screenfull'
 
 export default {

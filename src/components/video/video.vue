@@ -1,20 +1,23 @@
 <template>
-  <div id="detail">
-    <div>
-      <video width="640"
-             :id="tcPlayerId"
-             height="480"
-             class="tc-video-container"
-             playsinline
-             webkit-playinline
-             x5-playinline>
-      </video>
+    <div id="detail">
+        <div>
+            <video width="640"
+                   :id="tcPlayerId"
+                   height="480"
+                   class="tc-video-container"
+                   playsinline
+                   webkit-playinline
+                   x5-playinline>
+            </video>
+        </div>
+        <div>
+            <input type="button" id="play" v-on:click="tongbu" value="同步播放"/>
+        </div>
+        <div>
+            <input id="uploadVideoNow-file" type="file"  accept="video/*"/>
+            <input type="button" value="上传本地视频" v-on:click="shangchuan"/>
+        </div>
     </div>
-    <div>
-      <input type="button" id="play" v-on:click="tongbu" value="同步播放"/>
-      <input type="button" id="shangchuan" v-on:click="shangchuan" value="上传本地视频"/>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -27,14 +30,15 @@
             return {
                 tcPlayerId: 'tcPlayer' + Date.now(),
                 player: null,
-                RoomId:'x2RYna'
+                RoomId:'x2RYna',
+                url: ''
             }
         },
         mounted () {
             let self = this
             this.$nextTick(() => {
                 setTimeout(() => {
-                    let videoFileid = '5285890801792789133'
+                    let videoFileid = '5285890804129534917'
                     let videoAppid = '1301931404'
                     self.getVideoLang(videoFileid, videoAppid)
                 }, 400)
@@ -73,18 +77,27 @@
                 //alert('test')
                 this.player.on('playing',setInterval(this.playvideo,2000))
             },
+
             getSignature() {
-                return axios.post(url).then(function (response) {
-                    return response.data.signature;
-                })
+                return axios.post('http://localhost:8020/videoroom/signature')
+                    .then(function (response) {
+                        //alert(response.data)
+                        return response.data
+                    })
             },
             shangchuan() {
-
+                let file = document.querySelector('input[type=file]')
+                let mediaFile = file.files[0]
+                const tcVod = new TcVod({
+                    getSignature: this.getSignature // 前文中所述的获取上传签名的函数
+                })
+                const uploader = tcVod.upload({
+                    mediaFile: mediaFile, // 媒体文件（视频或音频或图片），类型为 File
+                })
+                uploader.on('media_progress', function(info) {
+                    window.console.log(info.percent) // 进度
+                })
             }
-
-
-
-
         }
     }
 </script>
