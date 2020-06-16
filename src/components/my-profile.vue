@@ -114,7 +114,7 @@ export default {
 .my-profile-wrapper
   width 50px
   height 50px
-  margin 15px
+  margin 20px
   &>span
     display: block;
     width: 100%;

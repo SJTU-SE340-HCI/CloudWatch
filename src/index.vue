@@ -25,12 +25,6 @@ import { translateGroupSystemNotice } from './utils/common'
 import { ACTION } from './utils/trtcCustomMessageMap'
 import MTA from './utils/mta'
 
-import { MESSAGE_TYPE } from 'vue-baberrage'
-import MessageSendBox from './components/message/message-bottom-send-box'
-
-import Player from './components/video/video.vue'
-import screenfull from 'screenfull'
-
 import Home from './components/home'
 
 export default {
