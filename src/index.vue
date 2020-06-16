@@ -57,11 +57,6 @@ export default {
   mounted() {
     // 初始化监听器
     this.initListener()
-    window.onresize = () => {
-      if (this.checkFull()) {
-        this.isFullscreen = !this.isFullscreen
-      }
-    }
   },
 
   watch: {

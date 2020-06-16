@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div
+          @mousemove="checkmouse($event)"
+  >
     <transition name="chatroom">
       <div class="chat-wrapper" v-if="showChatRoom">
         <el-row>
@@ -25,7 +27,7 @@
       </div>
     </transition>
     <player class="player" :isFullscreen="this.isFullscreen"/>
-    <el-button class="fullscreen" @click="screenfull">
+    <el-button class="fullscreen" @click="screenfull" v-show="showFullButton">
       全屏
     </el-button>
     <call-layer ref="callLayer" class="chat-wrapper"/>
@@ -59,15 +61,17 @@
       return {
         showChatRoom: false,
         isFullscreen: false,
+        showFullButton: true,
       }
     },
 
     mounted() {
-      window.onresize = () => {
-        if (this.checkFull()) {
-          this.isFullscreen = !this.isFullscreen
-        }
-      }
+      this.$nextTick(()=>{
+        document.addEventListener('fullscreenchange',(e)=>{
+          this.toggleFullScreen()
+        })
+
+      })
     },
 
     methods: {
@@ -81,16 +85,20 @@
         }
         screenfull.toggle()
       },
-      /**
-       * 是否全屏并按键ESC键的方法
-       */
-      checkFull() {
-        var isFull = document.fullscreenEnabled || window.fullScreen || document.webkitIsFullScreen || document.msFullscreenEnabled
-
-        if (isFull === undefined) {
-          isFull = false
+      toggleFullScreen() {
+        this.isFullscreen = !this.isFullscreen
+        this.showFullButton = this.isFullscreen? false : true
+      },
+      checkmouse(event) {
+        //console.log(event.offsetX)
+        console.log(event.clientX)
+        if (event.offsetX < 10) {
+          this.showFullButton = true
         }
-        return isFull
+
+        if (event.offsetX > 80 && this.isFullscreen) {
+          this.showFullButton = false
+        }
       }
     }
   }
