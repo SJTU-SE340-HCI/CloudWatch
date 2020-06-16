@@ -41,7 +41,7 @@
   import CurrentConversation from './conversation/current-conversation'
   import ImagePreviewer from './message/image-previewer'
   import CallLayer from './message/call-layer'
-  import Player from './first'
+  import Player from './video/video'
   import screenfull from 'screenfull'
 
   export default {
