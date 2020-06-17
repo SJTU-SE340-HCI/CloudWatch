@@ -22,17 +22,17 @@
     </transition>
     <transition name="float">
       <div  class="chatroom-float wrap" style="cursor: pointer" @click="showChatRoom = !showChatRoom"
-            v-show="!showChatRoom">
+            v-show="!showChatRoom && showChatRoomButton">
         <i class="iconfont icon-zuojiantou"></i>
       </div>
     </transition>
     <player class="player" :isFullscreen="this.isFullscreen"/>
     <el-button class="fullscreen" @click="screenfull" v-show="showFullButton">
-      全屏
+      {{this.isFullscreen? '退出全屏' : '全屏'}}
     </el-button>
     <call-layer ref="callLayer" class="chat-wrapper"/>
     <image-previewer />
-    <div class="bottom" v-if="isFullscreen">
+    <div class="bottom" v-show="isFullscreen && showBottom">
       <message-send-box />
     </div>
   </div>
@@ -62,6 +62,8 @@
         showChatRoom: false,
         isFullscreen: false,
         showFullButton: true,
+        showChatRoomButton: true,
+        showBottom: false,
       }
     },
 
@@ -88,16 +90,31 @@
       toggleFullScreen() {
         this.isFullscreen = !this.isFullscreen
         this.showFullButton = this.isFullscreen? false : true
+        this.showChatRoomButton = this.isFullscreen? false : true
       },
       checkmouse(event) {
-        //console.log(event.offsetX)
-        console.log(event.clientX)
-        if (event.offsetX < 10) {
+        if (event.clientX < 10) {
           this.showFullButton = true
         }
 
-        if (event.offsetX > 80 && this.isFullscreen) {
+        if (event.clientX > 80 && this.isFullscreen) {
           this.showFullButton = false
+        }
+
+        if (event.clientX > document.body.clientWidth - 10) {
+          this.showChatRoomButton = true
+        }
+
+        if (event.clientX < document.body.clientWidth - 100 && this.isFullscreen) {
+          this.showChatRoomButton = false
+        }
+
+        if (event.clientY > document.body.clientHeight - 70) {
+          this.showBottom = true
+        }
+
+        if (event.clientY < document.body.clientHeight - 100) {
+          this.showBottom = false
         }
       }
     }
