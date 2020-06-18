@@ -64,13 +64,11 @@
     <el-button
             @click='isRegister = true'
             style='width:100%; margin: 3px'
-            :loading='loading'
             v-show='!isRegister'
     >去注册</el-button>
     <el-button
             @click='isRegister = false'
             style='width:100%; margin: 3px;'
-            :loading='loading'
             v-show='isRegister'
     >去登录</el-button>
     <el-button

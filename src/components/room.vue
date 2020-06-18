@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div
+          @mousemove="checkmouse($event)"
+  >
     <transition name="chatroom">
       <div class="chat-wrapper" v-if="showChatRoom">
         <el-row>
@@ -20,17 +22,17 @@
     </transition>
     <transition name="float">
       <div  class="chatroom-float wrap" style="cursor: pointer" @click="showChatRoom = !showChatRoom"
-            v-show="!showChatRoom">
+            v-show="!showChatRoom && showChatRoomButton">
         <i class="iconfont icon-zuojiantou"></i>
       </div>
     </transition>
     <player class="player" :isFullscreen="this.isFullscreen"/>
-    <el-button class="fullscreen" @click="screenfull">
-      全屏
+    <el-button class="fullscreen" @click="screenfull" v-show="showFullButton">
+      {{this.isFullscreen? '退出全屏' : '全屏'}}
     </el-button>
     <call-layer ref="callLayer" class="chat-wrapper"/>
     <image-previewer />
-    <div class="bottom" v-if="isFullscreen">
+    <div class="bottom" v-show="isFullscreen && showBottom">
       <message-send-box />
     </div>
   </div>
@@ -41,7 +43,7 @@
   import CurrentConversation from './conversation/current-conversation'
   import ImagePreviewer from './message/image-previewer'
   import CallLayer from './message/call-layer'
-  import Player from './first'
+  import Player from './video/video'
   import screenfull from 'screenfull'
 
   export default {
@@ -59,15 +61,19 @@
       return {
         showChatRoom: false,
         isFullscreen: false,
+        showFullButton: true,
+        showChatRoomButton: true,
+        showBottom: false,
       }
     },
 
     mounted() {
-      window.onresize = () => {
-        if (this.checkFull()) {
-          this.isFullscreen = !this.isFullscreen
-        }
-      }
+      this.$nextTick(()=>{
+        document.addEventListener('fullscreenchange',(e)=>{
+          this.toggleFullScreen()
+        })
+
+      })
     },
 
     methods: {
@@ -81,16 +87,35 @@
         }
         screenfull.toggle()
       },
-      /**
-       * 是否全屏并按键ESC键的方法
-       */
-      checkFull() {
-        var isFull = document.fullscreenEnabled || window.fullScreen || document.webkitIsFullScreen || document.msFullscreenEnabled
-
-        if (isFull === undefined) {
-          isFull = false
+      toggleFullScreen() {
+        this.isFullscreen = !this.isFullscreen
+        this.showFullButton = this.isFullscreen? false : true
+        this.showChatRoomButton = this.isFullscreen? false : true
+      },
+      checkmouse(event) {
+        if (event.clientX < 10) {
+          this.showFullButton = true
         }
-        return isFull
+
+        if (event.clientX > 80 && this.isFullscreen) {
+          this.showFullButton = false
+        }
+
+        if (event.clientX > document.body.clientWidth - 10) {
+          this.showChatRoomButton = true
+        }
+
+        if (event.clientX < document.body.clientWidth - 100 && this.isFullscreen) {
+          this.showChatRoomButton = false
+        }
+
+        if (event.clientY > document.body.clientHeight - 70) {
+          this.showBottom = true
+        }
+
+        if (event.clientY < document.body.clientHeight - 100) {
+          this.showBottom = false
+        }
       }
     }
   }

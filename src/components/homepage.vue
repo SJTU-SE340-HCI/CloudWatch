@@ -1,6 +1,9 @@
 <template>
   <div>
     <div class='login-wrapper'>
+      <div class="title">
+        进入/创建房间
+      </div>
       <el-form
               ref="room"
               :rules='rules'
@@ -26,14 +29,25 @@
               @click='enterRoom'
               style='width:100%; margin-top: 6px'
               :loading='isLoading'
-      >进入房间</el-button>
+      >进入/创建房间</el-button>
     </div>
+    <div class='login-wrapper'>
+      观影记录
+    </div>
+    <div class="login-wrapper">
+      热门房间
+    </div>
+    <div class="profile">
+      <my-profile/>
+    </div>
+
   </div>
 </template>
 
 <script>
   import axios from 'axios'
   import { Form, FormItem } from 'element-ui'
+  import MyProfile from './my-profile'
 
   export default {
     name: 'Homepage',
@@ -41,6 +55,7 @@
     components: {
       ElForm: Form,
       ElFormItem: FormItem,
+      MyProfile,
     },
 
     data() {
@@ -169,12 +184,12 @@
     align-items: center
     flex-direction: column
     width: 400px
-    padding: 60px 60px 60px
+    padding: 50px 50px 50px
     background: $white
     color: $black
     border-radius: 5px
     box-shadow: 0 11px 20px 0 rgba(0, 0, 0, 0.3)
-    margin-top: 30%
+    margin-top: 10%
 
     .logo {
       width: 130px
@@ -184,5 +199,15 @@
     .user-selector {
       width: 100%
     }
+  }
+
+  .title {
+    padding-bottom: 30px;
+  }
+
+  .profile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 </style>
