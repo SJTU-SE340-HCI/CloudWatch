@@ -2,7 +2,7 @@
   <div>
     <div class='login-wrapper'>
       <div class="title">
-        进入/创建房间
+        {{ this.isEnterRoom ? "进入房间" : "创建房间" }}
       </div>
       <el-form
               ref="room"
@@ -10,6 +10,7 @@
               :model='form'
               label-width='0'
               style='width:100%'
+              v-show="isEnterRoom"
       >
         <el-form-item prop='room'>
           <el-input v-model='form.room' placeholder='请输入房间号' type='text' clearable></el-input>
@@ -24,12 +25,57 @@
           ></el-input>
         </el-form-item>
       </el-form>
+      <el-form
+              ref="room"
+              :rules='rules'
+              :model='createRoomForm'
+              label-width='75px'
+              style='width:100%'
+              v-show="!isEnterRoom"
+      >
+        <el-form-item prop='room' label="房间号">
+          <el-input v-model='createRoomForm.room' placeholder='请输入房间号' type='text' clearable></el-input>
+        </el-form-item>
+        <el-form-item label="房间名">
+          <el-input v-model="createRoomForm.name" placeholder='请输入房间名'></el-input>
+        </el-form-item>
+        <el-form-item label="是否公开">
+          <el-switch v-model="createRoomForm.isPublic"></el-switch>
+        </el-form-item>
+        <el-form-item prop='password' label="密码" v-show="!createRoomForm.isPublic">
+          <el-input
+                  v-model='createRoomForm.password'
+                  placeholder='请输入密码'
+                  type='password'
+                  show-password
+                  clearable
+          ></el-input>
+        </el-form-item>
+      </el-form>
       <el-button
               type='primary'
               @click='enterRoom'
-              style='width:100%; margin-top: 6px'
+              style='width:100%; margin: 5px'
               :loading='isLoading'
-      >进入/创建房间</el-button>
+              v-show='isEnterRoom'
+      >进入房间</el-button>
+      <el-button
+              @click='isEnterRoom = false'
+              style='width:100%; margin: 5px'
+              v-show='isEnterRoom'
+      >去创建房间</el-button>
+      <el-button
+              type='primary'
+              @click='createRoom'
+              style='width:100%; margin: 5px'
+              :loading='isLoading'
+              v-show='!isEnterRoom'
+      >创建房间</el-button>
+      <el-button
+              @click='isEnterRoom = true'
+              style='width:100%; margin: 5px'
+              v-show='!isEnterRoom'
+      >去进入房间</el-button>
     </div>
     <div class='login-wrapper'>
       观影记录
@@ -46,7 +92,7 @@
 
 <script>
   import axios from 'axios'
-  import { Form, FormItem } from 'element-ui'
+  import { Form, FormItem, Switch } from 'element-ui'
   import MyProfile from './my-profile'
 
   export default {
@@ -55,6 +101,7 @@
     components: {
       ElForm: Form,
       ElFormItem: FormItem,
+      ElSwitch: Switch,
       MyProfile,
     },
 
@@ -72,14 +119,21 @@
           room: '',
           password: '',
         },
+        createRoomForm: {
+          room: '',
+          password: '',
+          isPublic: true,
+          roomName: '',
+        },
         rules: {
-          password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+          password: [{required: true, message: '请输入密码', trigger: 'blur' }],
           room: [
             { required: true, message: '请输入房间号', trigger: 'blur' },
             { validator: checkRoomNumber, trigger: 'blur' }
           ]
         },
         isLoading: false,
+        isEnterRoom: true,
       }
     },
 
@@ -174,6 +228,9 @@
           }
         })
       },
+      createRoom() {
+
+      }
     }
   }
 </script>
@@ -184,7 +241,7 @@
     align-items: center
     flex-direction: column
     width: 400px
-    padding: 50px 50px 50px
+    padding: 35px 50px
     background: $white
     color: $black
     border-radius: 5px
