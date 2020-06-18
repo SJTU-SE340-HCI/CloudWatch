@@ -1,20 +1,20 @@
 <template>
     <div id="detail" :class="isFull? 'full':'detail'">
-        <div class="video">
-            <video width="640"
-                   :id="tcPlayerId"
-                   height="480"
-                   class="tc-video-container"
-                   playsinline
-                   webkit-playinline
-                   x5-playinline>
-            </video>
-        </div>
         <div class="center bottoms">
             <input type="button" id="play" v-on:click="tongbu" value="同步播放"/>
             <input id="uploadVideoNow-file" type="file"  accept="video/*"/>
             <input type="button" value="上传本地视频" v-on:click="shangchuan"/>
         </div>
+        <div class="video">
+        <video width="640"
+               :id="tcPlayerId"
+               height="480"
+               class="tc-video-container"
+               playsinline
+               webkit-playinline
+               x5-playinline>
+        </video>
+    </div>
     </div>
 </template>
 
@@ -62,7 +62,7 @@
                 let self = this
                 let time = this.player.currentTime()
                 //alert(time)
-                axios.get('http://localhost:8020/videoroom/play', {
+                axios.get('http://47.103.30.166:8020/videoroom/play', {
                     params: {
                         RoomId: this.RoomId,
                         curTime: time
@@ -84,7 +84,7 @@
             },
 
             getSignature() {
-                return axios.post('http://localhost:8020/videoroom/signature')
+                return axios.post('http://47.103.30.166:8020/videoroom/signature')
                     .then(function (response) {
                         //alert(response.data)
                         return response.data
@@ -107,7 +107,7 @@
     }
 </script>
 
-
+<!--
 <style lang='stylus' scoped>
   .detail{
     padding-left: 15%;
@@ -139,3 +139,4 @@
     align-items: center;
   }
 </style>
+-->
