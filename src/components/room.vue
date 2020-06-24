@@ -1,7 +1,16 @@
 <template>
   <div
+          class="container"
           @mousemove="checkmouse($event)"
   >
+    <div class="baberrage" v-if="isFullscreen">
+      <vue-baberrage
+              :isShow= "barrageIsShow"
+              :barrageList = "barrageList"
+              :loop = "barrageLoop"
+      >
+      </vue-baberrage>
+    </div>
     <transition name="chatroom">
       <div class="chat-wrapper" v-if="showChatRoom">
         <el-row>
@@ -45,6 +54,7 @@
   import CallLayer from './message/call-layer'
   import Player from './video/video'
   import screenfull from 'screenfull'
+  import { MESSAGE_TYPE } from 'vue-baberrage'
 
   export default {
     name: 'Room',
@@ -64,6 +74,11 @@
         showFullButton: true,
         showChatRoomButton: true,
         showBottom: false,
+        msg: 'Hello vue-baberrage',
+        barrageIsShow: true,
+        currentId : 0,
+        barrageLoop: false,
+        barrageList: [],
       }
     },
 
@@ -77,6 +92,22 @@
     },
 
     methods: {
+      addToList(messageList) {
+        const groupMessageList = messageList.filter(
+          message => message.type === this.TIM.TYPES.MSG_TEXT
+        )
+        let avatar = groupMessageList[0].avatar == '' ? 'https://imgcache.qq.com/open/qcloud/video/act/webim-avatar/avatar-2.png' : groupMessageList[0].avatar
+        let nick = groupMessageList[0].nick == '' ? groupMessageList[0].from : groupMessageList[0].nick
+        this.barrageList.push({
+          id: ++this.currentId,
+          avatar: avatar,
+          msg: nick + ':' + groupMessageList[0].payload.text,
+          time: 10,
+          type: MESSAGE_TYPE.NORMAL,
+          extraWidth: 2,
+        })
+      },
+
       screenfull() {
         if (!screenfull.isEnabled) {
           this.$message({
@@ -230,6 +261,14 @@
     top: 50%;
     float: left;
     z-index: 999;
+  }
+
+  .baberrage {
+    width: 100%;
+    height: 30%;
+    margin: 0;
+    position: relative;
+    z-index: 3;
   }
 
   /* 设置滚动条的样式 */

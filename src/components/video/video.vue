@@ -1,21 +1,39 @@
 <template>
     <div id="detail" :class="isFull? 'full':'detail'">
-        <div class="video">
-            <video width="640"
+      <div class="video" v-show="showVideo" >
+        <video
                :id="tcPlayerId"
-               height="480"
                class="tc-video-container"
                playsinline
                webkit-playinline
                x5-playinline>
-            </video>
-            <div class="center bottoms">
-                <input type="button" id="play" v-on:click="tongbu" value="同步播放"/>
-                <input id="uploadVideoNow-file" type="file"  accept="video/*"/>
-                <input type="button" value="上传本地视频" v-on:click="shangchuan"/>
-            </div>
+        </video>
+      </div>
+      <template v-if="!isFullscreen">
+        <input type="button" id="play" v-on:click="TongBu" value="同步播放"/>
+        <div class="showvideolist" style="margin-top: 5px">
+          <input type="button" value="浏览视频库" v-on:click="showVideoList"/>
         </div>
-
+        <div class="videolist" style="margin-top: 5px" v-show="showList">
+          <ul>
+            <li v-for="(item,index) in list" :key="index" style="display: inline-block;margin-left: 10px">
+              <img :src="item.cover" style="width: 80px;height: 80px" @click="changeVideo(item.fileId)"/>
+              <p>{{item.name}}</p>
+              <p>视频简介：{{item.text}}</p>
+            </li>
+          </ul>
+        </div>
+        <div class="" style="margin-top: 5px">
+          <input id="uploadVideoNow-file" type="file" accept="video/*"/>
+          <input type="button" value="上传本地视频" v-on:click="ShangChuan"/>
+        </div>
+        <div v-show="showJindu">
+          <p>上传进度：</p>
+          <div class="jindutiao">
+            <span v-bind:style="{width: jindu+'%'}"></span>
+          </div>
+        </div>
+      </template>
     </div>
 </template>
 
@@ -37,15 +55,59 @@
             return {
                 tcPlayerId: 'tcPlayer' + Date.now(),
                 player: null,
-                RoomId: 'x2RYna'
+                RoomId: 'x2RYna',
+                showList:false,
+                showVideo:false,
+                showJindu:false,
+                jindu:0,
+                Fileid: '5285890804272485428',
+                Appid: '1301931404',
+                list: [
+                    {
+                        cover:require('../../assets/image/video.jpg'),
+                        name:'主题曲片花',
+                        fileId:'5285890804129534917',
+                        text:'简介1'
+                    },
+                    {
+                        cover:require('../../assets/image/video.jpg'),
+                        name:'一路向北',
+                        fileId:'5285890804272485428',
+                        text:'简介2'
+                    },
+                    {
+                        cover:require('../../assets/image/video.jpg'),
+                        name:'live',
+                        fileId:'5285890801792789133',
+                        text:'简介3'
+                    },
+                    {
+                        cover:require('../../assets/image/video.jpg'),
+                        name:'浪姐',
+                        fileId:'5285890804347869645',
+                        text:'简介4'
+                    },
+                    {
+                        cover:require('../../assets/image/video.jpg'),
+                        name:'庆佘年',
+                        fileId:'5285890804447813743',
+                        text:'简介5'
+                    },
+                    {
+                        cover:require('../../assets/image/video.jpg'),
+                        name:'浪姐预告',
+                        fileId:'5285890804334475959',
+                        text:'简介6'
+                    }
+                ]
             }
         },
         mounted() {
             let self = this
             this.$nextTick(() => {
                 setTimeout(() => {
-                    let videoFileid = '5285890804129534917'
-                    let videoAppid = '1301931404'
+                    let videoFileid = this.Fileid
+                    let videoAppid = this.Appid
                     self.getVideoLang(videoFileid, videoAppid)
                 }, 400)
             })
@@ -59,7 +121,7 @@
                 }
                 this.player = window.TCPlayer(this.tcPlayerId, playerParam)
             },
-            playvideo() {
+            playVideo() {
                 let self = this
                 let time = this.player.currentTime()
                 //alert(time)
@@ -73,13 +135,12 @@
                     //if(player.paused){
                     //  setInterval(pause,5000);
                     //}
-                    //checkplayer();
                     if (Math.abs(response.data - time) > 0.5) {
                         self.player.currentTime(response.data + 1)
                     }
                 })
             },
-            tongbu() {
+            TongBu() {
                 //alert('test')
                 this.player.on('playing', setInterval(this.playvideo, 2000))
             },
@@ -92,7 +153,8 @@
                         return response.data
                     })
             },
-            shangchuan() {
+            ShangChuan() {
+                let self = this
                 let file = document.querySelector('input[type=file]')
                 let mediaFile = file.files[0]
                 const tcVod = new TcVod({
@@ -102,8 +164,31 @@
                     mediaFile: mediaFile, // 媒体文件（视频或音频或图片），类型为 File
                 })
                 uploader.on('media_progress', function (info) {
+                    self.showJindu=true
                     window.console.log(info.percent) // 进度
+                    self.jindu=info.percent*100
                 })
+                uploader.done().then(function (doneResult) {
+                    self.showJindu=false
+                    self.Fileid=doneResult.fileId
+                    self.player.loadVideoByID({
+                        fileID: self.Fileid, // 请传入需要播放的视频 filID（必须）
+                        appID: self.Appid, // 请传入点播账号的 appID（必须）
+                    })
+                    self.showVideo=true
+                })
+            },
+
+            showVideoList() {
+                this.showList=!this.showList
+            },
+            changeVideo(fileID) {
+                this.Fileid=fileID
+                this.player.loadVideoByID({
+                    fileID: this.Fileid, // 请传入需要播放的视频 filID（必须）
+                    appID: this.Appid, // 请传入点播账号的 appID（必须）
+                })
+                this.showVideo=true
             }
         }
     }
@@ -113,7 +198,8 @@
   .detail{
     padding-left: 15%;
     padding-right: 15%;
-    height: 85%;
+    padding-top: 5%;
+    height: 65%;
   }
   .full{
     padding: 0;
@@ -121,11 +207,10 @@
     left: -0.25%;
     height: 95.25%;
     top: -0.25%;
-
   }
   .video{
     width: 100%;
-    height: 97%;
+    height: 100%;
     margin: 0;
   }
   .buttons{
@@ -138,5 +223,17 @@
   .center{
     justify-content: center;
     align-items: center;
+  }
+
+  .jindutiao{
+    width: 250px;
+    height: 20px;
+    border: black 2px solid;
+  }
+
+  .jindutiao span{
+    float: left;
+    height: 20px;
+    background: #66afe9;
   }
 </style>
