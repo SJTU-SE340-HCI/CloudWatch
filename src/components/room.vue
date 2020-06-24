@@ -232,7 +232,6 @@
   }
 
   .player{
-    position: fixed;
     left: 0%;
     height: 0%;
     width: 100%;

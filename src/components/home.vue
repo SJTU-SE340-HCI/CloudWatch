@@ -1,7 +1,7 @@
 <template>
   <div>
     <homepage v-if="!isRoom" @enterRoom="enterRoom"/>
-    <room v-else />
+    <room ref="room" v-else />
   </div>
 </template>
 
@@ -24,6 +24,10 @@
     },
 
     methods: {
+      addToList(messageList) {
+        this.$refs.room.addToList(messageList)
+      },
+
       enterRoom() {
         this.isRoom = true
       }

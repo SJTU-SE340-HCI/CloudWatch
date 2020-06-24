@@ -215,6 +215,8 @@ export default {
               this.loading = false
               return
             } else {
+              this.$store.commit('updateUserID', res.data)
+
               this.tim
                 .login({
                   userID: this.form.userID,

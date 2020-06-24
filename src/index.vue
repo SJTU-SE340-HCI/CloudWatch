@@ -347,10 +347,8 @@ body {
 }
 
 .container
-  position relative
   height 100vh
 .container
-  position relative
   height 100vh
 // TODO filter mac chrome 会有问题，下次修改可以去掉
 .bg {

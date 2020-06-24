@@ -1,6 +1,6 @@
 <template>
-    <div id="detail" :class="isFull? 'full':'detail'">
-      <div class="video" v-show="showVideo" >
+    <div class="container">
+      <div id="detail" :class="isFull? 'full':'detail'" v-show="showVideo" >
         <video
                :id="tcPlayerId"
                class="tc-video-container"
@@ -8,11 +8,11 @@
                webkit-playinline
                x5-playinline>
         </video>
-      </div>
-      <template v-if="!isFullscreen">
         <input type="button" id="play" v-on:click="TongBu" value="同步播放"/>
-        <div class="showvideolist" style="margin-top: 5px">
-          <input type="button" value="浏览视频库" v-on:click="showVideoList"/>
+      </div>
+      <div v-if="!showVideo" class="center">
+        <div class="showvideolist">
+          <el-button type="primary" round @click="showVideoList">浏览视频库</el-button>
         </div>
         <div class="videolist" style="margin-top: 5px" v-show="showList">
           <ul>
@@ -23,23 +23,34 @@
             </li>
           </ul>
         </div>
-        <div class="" style="margin-top: 5px">
-          <input id="uploadVideoNow-file" type="file" accept="video/*"/>
-          <input type="button" value="上传本地视频" v-on:click="ShangChuan"/>
+        <el-upload
+                action=""
+                :limit="1"
+                drag
+                :auto-upload="false"
+                list-type="picture"
+                :on-change="ShangChuan"
+                class="center"
+        >
+          <div class="el-upload__tip">只能上传常见视频格式文件</div>
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        </el-upload>
+<!--        <div class="" style="margin-top: 5px">-->
+<!--          <input id="uploadVideoNow-file" type="file" accept="video/*"/>-->
+<!--          <input type="button" value="上传本地视频" v-on:click="ShangChuan"/>-->
+<!--        </div>-->
+        <div class="progress" v-show="showJindu">
+          <el-progress :text-inside="true" :stroke-width="30" :percentage="parseInt(jindu)"></el-progress>
         </div>
-        <div v-show="showJindu">
-          <p>上传进度：</p>
-          <div class="jindutiao">
-            <span v-bind:style="{width: jindu+'%'}"></span>
-          </div>
-        </div>
-      </template>
+      </div>
     </div>
 </template>
 
 <script>
     import axios from 'axios'
     import TcVod from 'vod-js-sdk-v6'
+    import {Upload, Progress} from 'element-ui'
 
     export default {
         name: 'TcPlayer',
@@ -51,6 +62,10 @@
                 return this.isFullscreen
             }
         },
+      components: {
+        ElUpload: Upload,
+        ElProgress: Progress
+      },
         data() {
             return {
                 tcPlayerId: 'tcPlayer' + Date.now(),
@@ -113,6 +128,9 @@
             })
         },
         methods: {
+          tt(event) {
+            window.console.log(event)
+          },
             // 初始化腾讯云播放器
             getVideoLang(fileID, appID) {
                 const playerParam = {
@@ -153,10 +171,11 @@
                         return response.data
                     })
             },
-            ShangChuan() {
+            ShangChuan(event) {
                 let self = this
-                let file = document.querySelector('input[type=file]')
-                let mediaFile = file.files[0]
+                //let file = document.querySelector('input[type=file]')
+                //let mediaFile = file.files[0]
+              let mediaFile = event.raw
                 const tcVod = new TcVod({
                     getSignature: this.getSignature // 前文中所述的获取上传签名的函数
                 })
@@ -195,11 +214,16 @@
 </script>
 
 <style lang='stylus' scoped>
+  .container{
+    width: 100%;
+    height: 100%;
+  }
+
   .detail{
     padding-left: 15%;
     padding-right: 15%;
     padding-top: 5%;
-    height: 65%;
+    height: 70%;
   }
   .full{
     padding: 0;
@@ -221,7 +245,8 @@
     height: 100%;
   }
   .center{
-    justify-content: center;
+    display: flex;
+    flex-direction: column;
     align-items: center;
   }
 
@@ -236,4 +261,16 @@
     height: 20px;
     background: #66afe9;
   }
+
+  .showvideolist{
+    padding: 5% 10%;
+  }
+
+  .progress{
+    padding: 10% 12% 0%;
+    width: 100%;
+    height: 100%;
+  }
+
+  @import url("//unpkg.com/element-ui@2.13.2/lib/theme-chalk/index.css");
 </style>

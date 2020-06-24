@@ -31,15 +31,15 @@
               :model='createRoomForm'
               label-width='75px'
               style='width:100%'
-              v-if="!isEnterRoom"
+              v-else
       >
-        <el-form-item label="房间名">
-          <el-input v-model="createRoomForm.name" placeholder='请输入房间名'></el-input>
+        <el-form-item label="房间名" prop="roomName">
+          <el-input v-model="createRoomForm.roomName" placeholder='请输入房间名'></el-input>
         </el-form-item>
         <el-form-item label="是否公开">
           <el-switch v-model="createRoomForm.isPublic"></el-switch>
         </el-form-item>
-        <el-form-item prop='password' label="密码" v-show="!createRoomForm.isPublic">
+        <el-form-item prop='password' label="密码" v-if="!createRoomForm.isPublic">
           <el-input
                   v-model='createRoomForm.password'
                   placeholder='请输入密码'
@@ -91,6 +91,8 @@
   import axios from 'axios'
   import { Form, FormItem, Switch } from 'element-ui'
   import MyProfile from './my-profile'
+  import { mapState } from 'vuex'
+
 
   export default {
     name: 'Homepage',
@@ -134,6 +136,12 @@
         isLoading: false,
         isEnterRoom: true,
       }
+    },
+
+    computed: {
+      ...mapState({
+        userID_cw: state => state.user.userID_cw
+      }),
     },
 
     methods: {
@@ -185,40 +193,7 @@
                         this.$store.commit('changeRoom', res.data)
                       })
 
-                    this.tim.getGroupList().then(response => {
-                      for (var group of response.data.groupList) {
-                        if (group.groupID == this.form.room) {
-                          this.enterRoomSuccess(group.groupID)
-                          return
-                        }
-                      }
-
-                      this.tim
-                        .joinGroup({
-                          groupID: this.form.room
-                        })
-                        .then(response => {
-                          this.enterRoomSuccess(response.data.group.groupID)
-                        })
-                        .catch(() => {
-                          this.tim
-                            .createGroup({
-                              groupID: this.form.room,
-                              name: this.form.room,
-                              type: this.TIM.TYPES.GRP_PUBLIC,
-                              joinOption: this.TIM.TYPES.JOIN_OPTIONS_FREE_ACCESS
-                            })
-                            .then(response => {
-                              this.enterRoomSuccess(response.data.group.groupID)
-                            })
-                            .catch(error => {
-                              this.$store.commit('showMessage', {
-                                type: 'error',
-                                message: error
-                              })
-                            })
-                        })
-                    })
+                    this.joinChatGroup(this.form.room)
                   }
                 }
               })
@@ -227,11 +202,70 @@
           }
         })
       },
+      joinChatGroup(roomID, roomName='') {
+        this.tim.getGroupList().then(response => {
+          for (var group of response.data.groupList) {
+            if (group.groupID == roomID) {
+              this.enterRoomSuccess(group.groupID)
+              return
+            }
+          }
+
+          this.tim
+            .joinGroup({
+              groupID: roomID
+            })
+            .then(response => {
+              this.enterRoomSuccess(response.data.group.groupID)
+            })
+            .catch(() => {
+              this.tim
+                .createGroup({
+                  groupID: roomID,
+                  name: roomName,
+                  type: this.TIM.TYPES.GRP_PUBLIC,
+                  joinOption: this.TIM.TYPES.JOIN_OPTIONS_FREE_ACCESS
+                })
+                .then(response => {
+                  this.enterRoomSuccess(response.data.group.groupID)
+                })
+                .catch(error => {
+                  this.$store.commit('showMessage', {
+                    type: 'error',
+                    message: error
+                  })
+                })
+            })
+        })
+      },
+
       createRoom() {
         this.isLoading = true
         this.$refs['room'].validate(valid => {
           if (valid) {
-            axios.post("")
+            axios.get('http://47.103.30.166:8020/Room/new', {
+              params: {
+                user_id: this.userID_cw,
+                passwordRoom: this.createRoomForm.password,
+                statusRoom: this.createRoomForm.isPublic ? 'public' : 'private'
+              }
+            }).then(res => {
+              window.console.log(res.data)
+              if (res.data == 'invalid param') {
+                this.$store.commit('showMessage', {
+                  type: 'error',
+                  message: '无效的创建参数'
+                })
+              }
+
+              this.joinChatGroup(res.data.toString(), this.createRoomForm.roomName)
+            }).catch(error => {
+              window.console.log(error)
+              this.$store.commit('showMessage', {
+                type: 'error',
+                message: error
+              })
+            })
           }
         })
       }

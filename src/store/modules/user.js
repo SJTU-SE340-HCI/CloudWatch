@@ -7,6 +7,7 @@ const user = {
     userID: 0,
     userSig: '',
     sdkAppID: 0,
+    userID_cw: 0,
   },
   mutations: {
     updateCurrentUserProfile(state, userProfile) {
@@ -30,6 +31,9 @@ const user = {
       state.userSig = payload.userSig
       state.sdkAppID = payload.sdkAppID
     },
+    updateUserID(state, user_id) {
+      state.userID_cw = user_id
+    }
   },
   actions: {
     // login(context, userID) {
