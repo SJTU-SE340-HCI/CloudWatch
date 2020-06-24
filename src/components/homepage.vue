@@ -10,7 +10,7 @@
               :model='form'
               label-width='0'
               style='width:100%'
-              v-show="isEnterRoom"
+              v-if="isEnterRoom"
       >
         <el-form-item prop='room'>
           <el-input v-model='form.room' placeholder='请输入房间号' type='text' clearable></el-input>
@@ -31,11 +31,8 @@
               :model='createRoomForm'
               label-width='75px'
               style='width:100%'
-              v-show="!isEnterRoom"
+              v-if="!isEnterRoom"
       >
-        <el-form-item prop='room' label="房间号">
-          <el-input v-model='createRoomForm.room' placeholder='请输入房间号' type='text' clearable></el-input>
-        </el-form-item>
         <el-form-item label="房间名">
           <el-input v-model="createRoomForm.name" placeholder='请输入房间名'></el-input>
         </el-form-item>
@@ -120,16 +117,18 @@
           password: '',
         },
         createRoomForm: {
-          room: '',
+          roomName: '',
           password: '',
           isPublic: true,
-          roomName: '',
         },
         rules: {
           password: [{required: true, message: '请输入密码', trigger: 'blur' }],
           room: [
             { required: true, message: '请输入房间号', trigger: 'blur' },
             { validator: checkRoomNumber, trigger: 'blur' }
+          ],
+          roomName: [
+            {required: true, message: '请输入房间名', trigger: 'blur' }
           ]
         },
         isLoading: false,
@@ -229,7 +228,12 @@
         })
       },
       createRoom() {
-
+        this.isLoading = true
+        this.$refs['room'].validate(valid => {
+          if (valid) {
+            axios.post("")
+          }
+        })
       }
     }
   }

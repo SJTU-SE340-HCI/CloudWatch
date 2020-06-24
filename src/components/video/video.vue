@@ -1,20 +1,21 @@
 <template>
     <div id="detail" :class="isFull? 'full':'detail'">
-        <div class="center bottoms">
-            <input type="button" id="play" v-on:click="tongbu" value="同步播放"/>
-            <input id="uploadVideoNow-file" type="file"  accept="video/*"/>
-            <input type="button" value="上传本地视频" v-on:click="shangchuan"/>
-        </div>
         <div class="video">
-        <video width="640"
+            <video width="640"
                :id="tcPlayerId"
                height="480"
                class="tc-video-container"
                playsinline
                webkit-playinline
                x5-playinline>
-        </video>
-    </div>
+            </video>
+            <div class="center bottoms">
+                <input type="button" id="play" v-on:click="tongbu" value="同步播放"/>
+                <input id="uploadVideoNow-file" type="file"  accept="video/*"/>
+                <input type="button" value="上传本地视频" v-on:click="shangchuan"/>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -87,6 +88,7 @@
                 return axios.post('http://47.103.30.166:8020/videoroom/signature')
                     .then(function (response) {
                         //alert(response.data)
+                        console.log(response)
                         return response.data
                     })
             },
@@ -107,7 +109,6 @@
     }
 </script>
 
-<!--
 <style lang='stylus' scoped>
   .detail{
     padding-left: 15%;
@@ -139,4 +140,3 @@
     align-items: center;
   }
 </style>
--->
