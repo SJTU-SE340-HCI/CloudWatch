@@ -16,6 +16,7 @@ export default new Vuex.Store({
     intervalID: 0,
     message: undefined,
     currentRoom:{},
+    currentRoomId:"",
     /*UserId: "",
     RoomId:"",
     ImRoomId:"",
@@ -56,6 +57,11 @@ export default new Vuex.Store({
     changeRoom(state,room)
     {
       state.currentRoom=room
+    },
+
+    changeRoomId(state,roomId)
+    {
+      state.currentRoomId=roomId
     }
   },
   modules: {
