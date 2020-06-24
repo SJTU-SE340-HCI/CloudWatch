@@ -24,7 +24,7 @@ export default {
       userToken: TEST_ACCOUNT.userToken,
       client: '',
       localStream: '',
-      roomId: this.$store.state.currentRoom.idTRTCRoom,
+      roomId: this.$store.state.currentRoomId,
       remoteVideo: [],
       isSignUp: false,
       isLink: false,

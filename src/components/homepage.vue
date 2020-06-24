@@ -183,7 +183,7 @@
                     return
                   } else {
                     // get sdk room id from server
-                    axios
+                    /*axios
                       .get('http://47.103.30.166:8020/Room/findById', {
                         params: {
                           room_id: this.form.room
@@ -191,7 +191,8 @@
                       })
                       .then(res => {
                         this.$store.commit('changeRoom', res.data)
-                      })
+                      })*/
+                      this.$store.commit('changeRoomId', this.form.room)
 
                     this.joinChatGroup(this.form.room)
                   }
