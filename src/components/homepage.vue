@@ -39,6 +39,11 @@
         <el-form-item label="是否公开">
           <el-switch v-model="createRoomForm.isPublic"></el-switch>
         </el-form-item>
+        <el-form-item label="房间类型">
+             <el-radio v-model="createRoomForm.roomKind" label="0">普通房间</el-radio>
+              <el-radio v-model="createRoomForm.roomKind" label="1">电影房间(支持回放)</el-radio>
+        </el-form-item>
+
         <el-form-item prop='password' label="密码" v-if="!createRoomForm.isPublic">
           <el-input
                   v-model='createRoomForm.password'
@@ -89,7 +94,7 @@
 
 <script>
   import axios from 'axios'
-  import { Form, FormItem, Switch } from 'element-ui'
+  import { Form, FormItem, Switch, Radio} from 'element-ui'
   import MyProfile from './my-profile'
   import { mapState } from 'vuex'
 
@@ -101,6 +106,7 @@
       ElForm: Form,
       ElFormItem: FormItem,
       ElSwitch: Switch,
+      ElRadio: Radio,
       MyProfile,
     },
 
@@ -122,6 +128,7 @@
           roomName: '',
           password: '',
           isPublic: true,
+          roomKind:'0',
         },
         rules: {
           password: [{required: true, message: '请输入密码', trigger: 'blur' }],
@@ -244,6 +251,7 @@
         this.isLoading = true
         this.$refs['room'].validate(valid => {
           if (valid) {
+            if (this.createRoomForm.roomKind=='0'){
             axios.get('http://47.103.30.166:8020/Room/new', {
               params: {
                 user_id: this.userID_cw,
@@ -267,6 +275,31 @@
                 message: error
               })
             })
+            }else{
+              axios.get('http://47.103.30.166:8020/Room/newMovieRoom', {
+              params: {
+                user_id: this.userID_cw,
+                passwordRoom: this.createRoomForm.password,
+                statusRoom: this.createRoomForm.isPublic ? 'public' : 'private'
+              }
+            }).then(res => {
+              window.console.log(res.data)
+              if (res.data == 'invalid param') {
+                this.$store.commit('showMessage', {
+                  type: 'error',
+                  message: '无效的创建参数'
+                })
+              }
+
+              this.joinChatGroup(res.data.toString(), this.createRoomForm.roomName)
+            }).catch(error => {
+              window.console.log(error)
+              this.$store.commit('showMessage', {
+                type: 'error',
+                message: error
+              })
+            })
+            }
           }
         })
       }
