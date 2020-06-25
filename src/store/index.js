@@ -16,12 +16,11 @@ export default new Vuex.Store({
     intervalID: 0,
     message: undefined,
     currentRoom:{},
-    currentRoomId:"",
-    /*UserId: "",
-    RoomId:"",
-    ImRoomId:"",
-    TrtcRoomId:"",
-    VideoRoomId:""*/
+    currentRoomId: '',
+    currentVideoRoomId:Number,
+    isRecording: false,
+    beginRecordingTime: Number,
+    barrages: new Map()
   },
   getters: {
     hidden(state) {
@@ -31,7 +30,20 @@ export default new Vuex.Store({
         return document.hidden
       }
       return !document.hasFocus()
+    },
+    getRecordingState(state) {
+      return state.isRecording
+    },
+    getRecordingBeginTime(state) {
+      return state.beginRecordingTime
+    },
+    getCurrentVideoId(state) {
+      return state.currentVideoRoomId
+    },
+    getBarrages(state) {
+      return state.barrages
     }
+
   },
   mutations: {
     startComputeCurrent(state) {
@@ -62,7 +74,35 @@ export default new Vuex.Store({
     changeRoomId(state,roomId)
     {
       state.currentRoomId=roomId
+    },
+
+    setRecordState(state, isrecording)
+    {
+      state.isRecording=isrecording
+    },
+
+    setBeginRecordTime(state)
+    {
+      state.beginRecordingTime=Date.now()
+    },
+
+    setVideoRoomId(state, videoFileId)
+    {
+      state.currentVideoRoomId=parseInt(videoFileId,10)
+    },
+
+    addBarrage(state,barrageContent)
+    {
+      var time= Date.now()-state.beginRecordingTime
+      state.barrages[time]=barrageContent
+      console.log(state.barrages)
+    },
+
+    clearBarrage(state) {
+      state.barrages.clear()
     }
+
+
   },
   modules: {
     conversation,

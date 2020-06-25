@@ -110,6 +110,10 @@
           type: MESSAGE_TYPE.NORMAL,
           extraWidth: 2,
         })
+        if (this.$store.getters.getRecordingState == true) {
+          var barrageMsg= nick + ':' + groupMessageList[0].payload.text
+          this.$store.commit('addBarrage',barrageMsg)
+        }
       },
 
       screenfull() {
