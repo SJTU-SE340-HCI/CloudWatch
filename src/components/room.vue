@@ -244,10 +244,10 @@
   }
 
   .record{
-     left: 0%;
-    height: 0%;
-    width: 100%;
-    height: 90%;
+    position: fixed;
+    left: 2%;
+    top: 4%;
+    float: left;
     z-index: 2;
   }
 
