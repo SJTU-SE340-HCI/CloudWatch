@@ -144,7 +144,8 @@ export default {
     ...mapGetters(['toAccount', 'currentConversationType']),
     ...mapState({
       memberList: state => state.group.currentMemberList,
-      userID: state => state.user.userID
+      userID: state => state.user.userID,
+      currentUserProfile: state => state.user.currentUserProfile,
     })
   },
   mounted() {
@@ -287,9 +288,18 @@ export default {
         conversationType: this.currentConversationType,
         payload: { text: this.messageContent }
       })
+      let content = this.messageContent
       this.$store.commit('pushCurrentMessageList', message)
       this.$bus.$emit('scroll-bottom')
-      this.tim.sendMessage(message).catch(error => {
+      this.tim.sendMessage(message).then(() => {
+        window.console.log(this.$parent.$parent.$parent)
+        this.$parent.$parent.$parent.$parent.addToList([{
+          type: this.TIM.TYPES.MSG_TEXT,
+          avatar: this.currentUserProfile.avatar,
+          nick: this.currentUserProfile.nick,
+          payload: { text: content }
+        }])
+      }).catch(error => {
         this.$store.commit('showMessage', {
           type: 'error',
           message: error.message

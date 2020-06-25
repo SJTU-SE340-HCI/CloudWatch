@@ -101,6 +101,7 @@
         )
         let avatar = groupMessageList[0].avatar == '' ? 'https://imgcache.qq.com/open/qcloud/video/act/webim-avatar/avatar-2.png' : groupMessageList[0].avatar
         let nick = groupMessageList[0].nick == '' ? groupMessageList[0].from : groupMessageList[0].nick
+        window.console.log(groupMessageList)
         this.barrageList.push({
           id: ++this.currentId,
           avatar: avatar,
@@ -277,7 +278,7 @@
     width: 100%;
     height: 30%;
     margin: 0;
-    position: relative;
+    position: fixed;
     z-index: 3;
   }
 
