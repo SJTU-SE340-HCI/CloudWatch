@@ -36,6 +36,7 @@
       </div>
     </transition>
     <player class="player" :isFullscreen="this.isFullscreen"/>
+    <record class="record"/>
     <el-button class="fullscreen" @click="screenfull" v-show="showFullButton">
       {{this.isFullscreen? '退出全屏' : '全屏'}}
     </el-button>
@@ -53,6 +54,7 @@
   import ImagePreviewer from './message/image-previewer'
   import CallLayer from './message/call-layer'
   import Player from './video/video'
+  import Record from './record'
   import screenfull from 'screenfull'
   import { MESSAGE_TYPE } from 'vue-baberrage'
 
@@ -65,6 +67,7 @@
       ImagePreviewer,
       CallLayer,
       Player,
+      Record
     },
 
     data () {
@@ -233,6 +236,14 @@
 
   .player{
     left: 0%;
+    height: 0%;
+    width: 100%;
+    height: 90%;
+    z-index: 2;
+  }
+
+  .record{
+     left: 0%;
     height: 0%;
     width: 100%;
     height: 90%;

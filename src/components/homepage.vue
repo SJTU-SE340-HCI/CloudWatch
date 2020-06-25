@@ -43,7 +43,6 @@
              <el-radio v-model="createRoomForm.roomKind" label="0">普通房间</el-radio>
               <el-radio v-model="createRoomForm.roomKind" label="1">电影房间(支持回放)</el-radio>
         </el-form-item>
-
         <el-form-item prop='password' label="密码" v-if="!createRoomForm.isPublic">
           <el-input
                   v-model='createRoomForm.password'
@@ -251,7 +250,7 @@
         this.isLoading = true
         this.$refs['room'].validate(valid => {
           if (valid) {
-            if (this.createRoomForm.roomKind=='0'){
+            if (this.createRoomForm.roomKind=='0') {
             axios.get('http://47.103.30.166:8020/Room/new', {
               params: {
                 user_id: this.userID_cw,
