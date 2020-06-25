@@ -36,7 +36,10 @@
       </div>
     </transition>
     <player class="player" :isFullscreen="this.isFullscreen"/>
-    <record class="record"/>
+<!--    <record class="record"/>-->
+    <el-button class="exitRoom" @click="exitRoom" v-show="!isFullscreen">
+      退出房间
+    </el-button>
     <el-button class="fullscreen" @click="screenfull" v-show="showFullButton">
       {{this.isFullscreen? '退出全屏' : '全屏'}}
     </el-button>
@@ -90,7 +93,6 @@
         document.addEventListener('fullscreenchange',(e)=>{
           this.toggleFullScreen()
         })
-
       })
     },
 
@@ -125,6 +127,9 @@
           return false
         }
         screenfull.toggle()
+      },
+      exitRoom() {
+        this.$parent.isRoom = false
       },
       toggleFullScreen() {
         this.isFullscreen = !this.isFullscreen
@@ -274,6 +279,14 @@
     position: fixed;
     left: 1%;
     top: 50%;
+    float: left;
+    z-index: 999;
+  }
+
+  .exitRoom{
+    position: fixed;
+    left: 1%;
+    top: 40%;
     float: left;
     z-index: 999;
   }
