@@ -15,7 +15,7 @@
 <!--      <i class="iconfont icon-zidingyi" title="发自定义消息" @click="sendCustomDialogVisible = true"></i>-->
 <!--      <i class="el-icon-video-camera" v-if="currentConversationType === 'C2C'&& toAccount !== userID" title="视频通话" @click="videoCall"></i>-->
       <div class="voice">
-        <VoiceCommunicate></VoiceCommunicate>
+        <VoiceCommunicate ref="VoiceCommunicate"></VoiceCommunicate>
       </div>
     </div>
     <el-dialog title="发自定义消息" :visible.sync="sendCustomDialogVisible" width="30%">
@@ -156,6 +156,10 @@ export default {
     this.$refs['text-input'].removeEventListener('paste', this.handlePaste)
   },
   methods: {
+
+    recordvoice: function(linkOrder) {
+        this.$refs.VoiceCommunicate.voicecommunicate(linkOrder)
+    },
     reEditMessage(payload) {
       this.messageContent = payload
     },

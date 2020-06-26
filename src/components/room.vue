@@ -36,7 +36,7 @@
       </div>
     </transition>
     <player class="player" :isFullscreen="this.isFullscreen"/>
-    <record class="record"/>
+    <record :recordVoice="recordVoice" class="record"></record>
     <el-button class="exitRoom" @click="exitRoom" v-show="!isFullscreen">
       退出房间
     </el-button>
@@ -46,7 +46,7 @@
     <call-layer ref="callLayer" class="chat-wrapper"/>
     <image-previewer />
     <div class="bottom" v-show="isFullscreen && showBottom">
-      <message-send-box />
+      <message-send-box ref="MessageSendBox"></message-send-box>
     </div>
   </div>
 </template>
@@ -127,6 +127,12 @@
           type: MESSAGE_TYPE.NORMAL,
           extraWidth: 2,
         })
+      },
+
+      recordVoice(linkOrder) {
+         console.log('parent receive')
+         console.log(this.$refs.MessageSendBox)
+        this.$refs.MessageSendBox.recordvoice(linkOrder)
       },
 
       screenfull() {
@@ -266,7 +272,7 @@
   .record{
     position: fixed;
     left: 2%;
-    top: 4%;
+    top: 90%;
     float: left;
     z-index: 2;
   }

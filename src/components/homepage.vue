@@ -153,10 +153,17 @@
     methods: {
       enterRoomSuccess(groupID) {
         this.$store.dispatch('checkoutConversation', 'GROUP' + groupID)
-        this.$store.commit('showMessage', {
-          type: 'success',
-          message: '进入房间成功'
-        })
+        if(this.$store.state.currentRoom.kindRoom==1) {
+          this.$store.commit('showMessage',{
+            type: 'success',
+            message: '这是一个电影房间'
+          })
+        }else {
+          this.$store.commit('showMessage',{
+            type: 'success',
+            message: '这是一个普通房间'
+          })
+        }
         this.$emit('enterRoom')
       },
       enterRoom() {
@@ -188,8 +195,8 @@
                     this.isLoading = false
                     return
                   } else {
-                    // get sdk room id from server
-                    /*axios
+                    // get room infor from backend
+                    axios
                       .get('http://47.103.30.166:8020/Room/findById', {
                         params: {
                           room_id: this.form.room
@@ -197,7 +204,7 @@
                       })
                       .then(res => {
                         this.$store.commit('changeRoom', res.data)
-                      })*/
+                      })
                       this.$store.commit('changeRoomId', this.form.room)
 
                     this.joinChatGroup(this.form.room)
