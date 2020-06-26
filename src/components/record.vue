@@ -17,12 +17,6 @@ export default {
             recordedBarrages: new Map()
         }
     },
-    props: {
-      recordVoice: {
-        type: Function,
-        default: null
-      }
-    },
     methods: {
         beginRecord() {
             this.isRecording=true
@@ -35,18 +29,18 @@ export default {
             this.$store.commit('setBeginRecordTime')
             this.$store.commit('setVideoRoomId', '12')
             this.$store.commit('clearBarrage')
-            if(this.recordVoice) {
+            /*if(this.recordVoice) {
                 this.recordVoice(true)
-            }
+            }*/
         },
         finishRecord() {
             this.isRecording=false
             
             /* 停止录制结束连麦 */
             this.$store.commit('setRecordState',false)
-            if(this.recordVoice) {
+            /*if(this.recordVoice) {
                 this.recordVoice(false)
-            }
+            }*/
 
             // 将vuex中的弹幕消息发送到后端
             axios({

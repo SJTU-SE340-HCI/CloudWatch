@@ -36,7 +36,7 @@
       </div>
     </transition>
     <player class="player" :isFullscreen="this.isFullscreen"/>
-    <record :recordVoice="recordVoice" class="record"></record>
+    <record ref="Record" class="record" v-show="showRecordButton"></record>
     <el-button class="exitRoom" @click="exitRoom" v-show="!isFullscreen">
       退出房间
     </el-button>
@@ -80,6 +80,7 @@
         showFullButton: true,
         showChatRoomButton: true,
         showBottom: false,
+        showRecordButton: false,
         msg: 'Hello vue-baberrage',
         barrageIsShow: true,
         currentId : 0,
@@ -127,6 +128,16 @@
           type: MESSAGE_TYPE.NORMAL,
           extraWidth: 2,
         })
+      },
+
+      beginRecord() {
+        this.$refs.Record.beginRecord()
+        this.$refs.Record.presentRecord()
+      },
+
+      finishRecord() {
+        this.$refs.Record.finishRecord()
+        this.$refs.Record.finishPresent()
       },
 
       recordVoice(linkOrder) {

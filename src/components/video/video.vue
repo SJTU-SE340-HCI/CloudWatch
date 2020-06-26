@@ -138,6 +138,19 @@
                     appID: appID
                 }
                 this.player = window.TCPlayer(this.tcPlayerId, playerParam)
+                if (this.$store.state.currentRoom.kindRoom==1) {
+                console.log(this.player)
+                this.player.on('play',this.beginRecord)
+                this.player.on('pause', this.finishRecord)
+                }
+            },
+
+            // 视频状态改变回调函数，用户录制
+            beginRecord() {
+              this.$parent.beginRecord()
+            },
+            finishRecord() {
+              this.$parent.finishRecord()
             },
             playVideo() {
                 let self = this
@@ -157,6 +170,7 @@
                         self.player.currentTime(response.data + 1)
                     }
                 })
+                console.log('play video')
             },
             TongBu() {
                 //alert('test')
