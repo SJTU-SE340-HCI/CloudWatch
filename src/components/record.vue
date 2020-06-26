@@ -2,17 +2,24 @@
   <div class="container">
     <el-button type="primary"  @click="beginRecord" v-if="!isRecording" >录制</el-button>
     <el-button type="primary"  @click="finishRecord" v-else>结束录制</el-button>
-    <el-button type="primary" @click="presentRecord">回放</el-button>
+    <el-button type="primary" @click="presentRecord" v-if="!isPresenting">回放</el-button>
+    <el-button type="primary"  @click="finishPresent" v-else>结束回放</el-button>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import VoiceCommunicate from './voice'
 export default {
     data() {
         return {
+            isPresenting: false,
             isRecording:false,
+            recordedBarrages: new Map()
         }
+    },
+    components: {
+         VoiceCommunicate: VoiceCommunicate
     },
     methods: {
         beginRecord() {
@@ -41,19 +48,61 @@ export default {
             url: 'http://47.103.30.166:8020/Room/textRecord/Receive',
             headers: {}, 
             params: {
-                video_id: 12
+                video_id: this.$store.getters.getCurrentVideoId
             },
             data: this.$store.getters.getBarrages
-            });
-
-
+            })
         },
+
         presentRecord() {
             /*
             从后端拿到弹幕消息
             根据当前开始的时间轮询弹幕消息的队列
             */
+            this.isPresenting=true
+            var videoid = new Number(this.$store.getters.getCurrentVideoId)
+            axios
+            .get('http://47.103.30.166:8020/Room/textRecord/findByVideoId', {
+            params: {
+               video_id: videoid
+            }
+            })
+            .then(res => {
+            this.recordedBarrages = res.data
+            }
+            )
+
+            // 轮询
+            const timeId = setInterval(() => {
+                if (this.isPresenting == false) {
+                clearInterval(timeId)
+                }
+                this.sendReadyBarrage()
+            },1000)
+        },
+
+        finishPresent() {
+            this.isPresenting=false
+        },
+
+        sendReadyBarrage() {
+            Object.entries(this.recordedBarrages).map((key, value) => {
+                    var barrageTime = Number(key[0])+ Number(this.$store.getters.getRecordingBeginTime)
+                    var cur=Date.now()
+                    console.log(barrageTime, cur)
+                    if( barrageTime>= cur && barrageTime<cur+1000)
+                    {
+                        console.log('hit')
+                        this.$parent.sendBarrage(key[1])
+                    }
+            })
+        },
+
+        beginVoiceCommunicate() {
+            this.$refs.VoiceCommunicate.createClient()
         }
+
+
     }
 }
 </script>

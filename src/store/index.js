@@ -19,8 +19,10 @@ export default new Vuex.Store({
     currentRoomId: '',
     currentVideoRoomId:Number,
     isRecording: false,
+    isPresenting: false,
     beginRecordingTime: Number,
-    barrages: new Map()
+    barrages: new Map(),
+    priorBarrages: new Map()
   },
   getters: {
     hidden(state) {
@@ -42,6 +44,12 @@ export default new Vuex.Store({
     },
     getBarrages(state) {
       return state.barrages
+    },
+    getPriorBarrages(state) {
+      return state.priorBarrages
+    },
+    getPresentingState(state) {
+      return state.isPresenting
     }
 
   },
@@ -81,6 +89,11 @@ export default new Vuex.Store({
       state.isRecording=isrecording
     },
 
+    setPresentState(state, ispresenting)
+    {
+      state.isPresenting=ispresenting
+    },
+
     setBeginRecordTime(state)
     {
       state.beginRecordingTime=Date.now()
@@ -88,7 +101,8 @@ export default new Vuex.Store({
 
     setVideoRoomId(state, videoFileId)
     {
-      state.currentVideoRoomId=parseInt(videoFileId,10)
+      var fileid=new Number(parseInt(videoFileId,10))
+      state.currentVideoRoomId=fileid&0xffffffff
     },
 
     addBarrage(state,barrageContent)
@@ -100,8 +114,12 @@ export default new Vuex.Store({
 
     clearBarrage(state) {
       state.barrages.clear()
-    }
+    },
 
+    setPriorBarrage(state, barrageList)
+    {
+      state.priorBarrages=barrageList
+    }
 
   },
   modules: {

@@ -36,7 +36,7 @@
       </div>
     </transition>
     <player class="player" :isFullscreen="this.isFullscreen"/>
-<!--    <record class="record"/>-->
+    <record class="record"/>
     <el-button class="exitRoom" @click="exitRoom" v-show="!isFullscreen">
       退出房间
     </el-button>
@@ -116,6 +116,17 @@
           var barrageMsg= nick + ':' + groupMessageList[0].payload.text
           this.$store.commit('addBarrage',barrageMsg)
         }
+      },
+
+      sendBarrage(message) {
+        console.log('parent receive')
+        this.barrageList.push({
+          id: ++this.currentId,
+          msg: message,
+          time: 10,
+          type: MESSAGE_TYPE.NORMAL,
+          extraWidth: 2,
+        })
       },
 
       screenfull() {
