@@ -143,7 +143,7 @@
       recordVoice(linkOrder) {
          console.log('parent receive')
          console.log(this.$refs.MessageSendBox)
-        this.$refs.MessageSendBox.recordvoice(linkOrder)
+         this.$refs.MessageSendBox.recordvoice(linkOrder)
       },
 
       screenfull() {

@@ -27,7 +27,6 @@ export default {
             */
             this.$store.commit('setRecordState',true)
             this.$store.commit('setBeginRecordTime')
-            this.$store.commit('setVideoRoomId', '12')
             this.$store.commit('clearBarrage')
             /*if(this.recordVoice) {
                 this.recordVoice(true)

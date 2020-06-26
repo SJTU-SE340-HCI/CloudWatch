@@ -102,7 +102,8 @@ export default new Vuex.Store({
     setVideoRoomId(state, videoFileId)
     {
       var fileid=new Number(parseInt(videoFileId,10))
-      state.currentVideoRoomId=fileid&0xffffffff
+      state.currentVideoRoomId=fileid&0xffffff
+      console.log(state.currentVideoRoomId)
     },
 
     addBarrage(state,barrageContent)
@@ -113,7 +114,7 @@ export default new Vuex.Store({
     },
 
     clearBarrage(state) {
-      state.barrages.clear()
+      state.barrages=new Map()
     },
 
     setPriorBarrage(state, barrageList)

@@ -157,7 +157,7 @@ export default {
   },
   methods: {
 
-    recordvoice: function(linkOrder) {
+    recordvoice(linkOrder) {
         this.$refs.VoiceCommunicate.voicecommunicate(linkOrder)
     },
     reEditMessage(payload) {

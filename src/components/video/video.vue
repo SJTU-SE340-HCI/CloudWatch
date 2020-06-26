@@ -139,18 +139,24 @@
                 }
                 this.player = window.TCPlayer(this.tcPlayerId, playerParam)
                 if (this.$store.state.currentRoom.kindRoom==1) {
-                console.log(this.player)
-                this.player.on('play',this.beginRecord)
-                this.player.on('pause', this.finishRecord)
+                  this.player.on('play',this.beginRecord)
+                  this.player.on('pause', this.finishRecord)
                 }
             },
 
             // 视频状态改变回调函数，用户录制
             beginRecord() {
+              this.$store.commit('setVideoRoomId', this.Fileid)
+              axios.get('http://47.103.30.166:8020/Room/setSDK', {
+                params: {
+                  room_id: this.$store.state.currentRoomId,
+                  video_id: this.$store.state.currentVideoRoomId
+                }
+              })
               this.$parent.beginRecord()
             },
             finishRecord() {
-              this.$parent.finishRecord()
+                this.$parent.finishRecord()
             },
             playVideo() {
                 let self = this
