@@ -35,12 +35,12 @@
         <i class="iconfont icon-zuojiantou"></i>
       </div>
     </transition>
-    <player class="player" :isFullscreen="this.isFullscreen"/>
+    <player class="player" :isFullscreen="this.isFullscreen" />
     <record ref="Record" class="record" v-show="showRecordButton"></record>
     <el-button class="exitRoom" @click="exitRoom" v-show="!isFullscreen">
       退出房间
     </el-button>
-    <el-button class="fullscreen" @click="screenfull" v-show="showFullButton">
+    <el-button class="fullscreen" @click="screenfull" v-show="showFullButton && showVideo">
       {{this.isFullscreen? '退出全屏' : '全屏'}}
     </el-button>
     <call-layer ref="callLayer" class="chat-wrapper"/>
@@ -86,6 +86,7 @@
         currentId : 0,
         barrageLoop: false,
         barrageList: [],
+        showVideo: false,
       }
     },
 
