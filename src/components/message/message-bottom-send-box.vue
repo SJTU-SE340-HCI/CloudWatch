@@ -458,9 +458,17 @@ textarea {
 }
 
 .bottom {
+  position: fixed;
+  bottom: 0%;
+  width: 100%;
+  height: 5%;
+  left: 0%;
+  z-index: 999;
   display: flex;
   flex-direction: row;
   align-items: center;
+  background-color white
+
 
   .btn-send {
     cursor: pointer;
