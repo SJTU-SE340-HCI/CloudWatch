@@ -45,8 +45,8 @@
     </el-button>
     <call-layer ref="callLayer" class="chat-wrapper"/>
     <image-previewer />
-    <div class="bottom" v-show="isFullscreen && showBottom">
-      <message-send-box ref="MessageSendBox"></message-send-box>
+    <div class="bottomSend" v-show="isFullscreen">
+      <message-send-box  v-show="showBottom" ref="MessageSendBox"></message-send-box>
     </div>
   </div>
 </template>
@@ -265,13 +265,14 @@
     z-index: 999;
   }
 
-  .bottom{
+  .bottomSend{
     position: fixed;
     bottom: 0%;
     width: 100%;
     height: 5%;
     left: 0%;
     z-index: 999;
+    background-color #000000
   }
 
   .player{

@@ -90,6 +90,7 @@
       <el-card class="box-card">
         <el-table
                 :data="rooms"
+                height="750"
                 style="width: 100%">
           <el-table-column
                   prop="idRoom"

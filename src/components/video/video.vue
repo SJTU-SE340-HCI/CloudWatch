@@ -76,7 +76,7 @@
                 isPause:false,
                 uploader: null,
                 jindu: 0,
-                Fileid: '0',
+                Fileid: null,
                 Appid: '1301931404',
                 list: [
                     {
@@ -120,29 +120,29 @@
         },
         mounted() {
             let self = this
-            let videoFileid = this.Fileid
-            let videoAppid = this.Appid
-            self.getVideoLang(videoFileid, videoAppid)
-            axios.get('http://47.103.30.166:8020/Room/findById', {
-                params: {
-                    room_id: this.$store.state.currentRoomId
-                }
-            }).then(res => {
-                if (res.data.videoFileId != undefined || res.data.videoFileId != null) {
-                    // this.$store.commit('setVideoRoomId', this.Fileid)
-                    // this.player.loadVideoByID({
-                    //   fileID: res.data.videoFileId, // 请传入需要播放的视频 filID（必须）
-                    //   appID: this.Appid, // 请传入点播账号的 appID（必须）
-                    // })
-                    // this.showVideo=true
-                    // this.$parent.showVideo=true
-                }
+
+            this.$nextTick(() => {
+              setTimeout(() => {
+                  let videoFileid = this.Fileid
+                  let videoAppid = this.Appid
+                  self.getVideoLang(videoFileid, videoAppid)
+                  axios.get('http://47.103.30.166:8020/Room/findById', {
+                      params: {
+                          room_id: this.$store.state.currentRoomId
+                      }
+                  }).then(res => {
+                      if (res.data.videoFileId != undefined || res.data.videoFileId != null) {
+                          this.$store.commit('setVideoRoomId', this.Fileid)
+                          this.player.loadVideoByID({
+                              fileID: res.data.videoFileId, // 请传入需要播放的视频 filID（必须）
+                              appID: this.Appid, // 请传入点播账号的 appID（必须）
+                          })
+                          this.showVideo=true
+                          this.$parent.showVideo=true
+                      }
+                  })
+              }, 400)
             })
-            // this.$nextTick(() => {
-            //   setTimeout(() => {
-            //
-            //   }, 400)
-            // })
         },
         methods: {
             // 初始化腾讯云播放器
@@ -156,7 +156,7 @@
                     }
                 }
                 this.player = window.TCPlayer(this.tcPlayerId, playerParam)
-                this.player.on('playing', setInterval(this.playVideo, 2000))
+                this.player.on('playing', () => setInterval(this.playVideo, 2000))
 
                 if (this.$store.state.currentRoom.kindRoom == 1) {
                     this.player.on('play', this.beginRecord)
@@ -181,23 +181,25 @@
 
             playVideo() {
                 let self = this
-                let time = this.player.currentTime()
-                //alert(time)
-                axios.get('http://47.103.30.166:8020/videoroom/play', {
-                    params: {
-                        roomid: this.$store.state.currentRoomId,
-                        //RoomId: '666',
-                        curTime: time
-                    }
-                }).then(function (response) {
-                    //alert(response.data)
-                    //if(player.paused){
-                    //  setInterval(pause,5000);
-                    //}
-                    if (Math.abs(response.data - time) > 0.5) {
-                        self.player.currentTime(response.data + 1)
-                    }
-                })
+                if (this.player != null) {
+                    let time = this.player.currentTime()
+                    //alert(time)
+                    axios.get('http://47.103.30.166:8020/videoroom/play', {
+                        params: {
+                            roomid: this.$store.state.currentRoomId,
+                            //RoomId: '666',
+                            curTime: time
+                        }
+                    }).then(function (response) {
+                        //alert(response.data)
+                        //if(player.paused){
+                        //  setInterval(pause,5000);
+                        //}
+                        if (Math.abs(response.data - time) > 0.5) {
+                            self.player.currentTime(response.data + 1)
+                        }
+                    })
+                }
             },
 
             getSignature() {
@@ -231,12 +233,12 @@
                     window.console.log(info.percent) // 进度
                     self.jindu = info.percent * 100
                 })
-                this.uploader.done().then(function (doneResult) {
+                this.uploader.done().then( doneResult => {
                     self.showJindu = false
                     self.Fileid = doneResult.fileId
                     axios.get('http://47.103.30.166:8020/Room/setVideo', {
                         params: {
-                            room_id: this.$store.state.currentRoomId,
+                            room_id: self.$store.state.currentRoomId,
                             videoFileId: self.Fileid
                         }
                     }).then(res => {
