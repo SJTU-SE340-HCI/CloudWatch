@@ -35,7 +35,7 @@
         <i class="iconfont icon-zuojiantou"></i>
       </div>
     </transition>
-    <player class="player" :isFullscreen="this.isFullscreen" />
+    <player class="player" ref="player" :isFullscreen="this.isFullscreen" />
     <record ref="Record" class="record" v-show="showRecordButton"></record>
     <el-button class="exitRoom" @click="exitRoom" v-show="!isFullscreen">
       退出房间
@@ -60,6 +60,7 @@
   import Record from './record'
   import screenfull from 'screenfull'
   import { MESSAGE_TYPE } from 'vue-baberrage'
+  import {decodeText} from '../utils/decodeText'
 
   export default {
     name: 'Room',
@@ -105,7 +106,6 @@
         )
         let avatar = groupMessageList[0].avatar == '' ? 'https://imgcache.qq.com/open/qcloud/video/act/webim-avatar/avatar-2.png' : groupMessageList[0].avatar
         let nick = groupMessageList[0].nick == '' ? groupMessageList[0].from : groupMessageList[0].nick
-        window.console.log(groupMessageList)
         this.barrageList.push({
           id: ++this.currentId,
           avatar: avatar,
@@ -158,6 +158,7 @@
         screenfull.toggle()
       },
       exitRoom() {
+        this.$refs.player.player = null
         this.$parent.isRoom = false
       },
       toggleFullScreen() {
