@@ -121,18 +121,31 @@
     },
     mounted() {
       let self = this
-      this.$nextTick(() => {
-        setTimeout(() => {
-          let videoFileid = this.Fileid
-          let videoAppid = this.Appid
-          self.getVideoLang(videoFileid, videoAppid)
-        }, 400)
+      let videoFileid = this.Fileid
+      let videoAppid = this.Appid
+      self.getVideoLang(videoFileid, videoAppid)
+      axios.get('http://47.103.30.166:8020/Room/findById', {
+        params: {
+          room_id: this.$store.state.currentRoomId
+        }
+      }).then(res => {
+        if (res.data.videoFileId != undefined || res.data.videoFileId != null) {
+          // this.$store.commit('setVideoRoomId', this.Fileid)
+          // this.player.loadVideoByID({
+          //   fileID: res.data.videoFileId, // 请传入需要播放的视频 filID（必须）
+          //   appID: this.Appid, // 请传入点播账号的 appID（必须）
+          // })
+          // this.showVideo=true
+          // this.$parent.showVideo=true
+        }
       })
+      // this.$nextTick(() => {
+      //   setTimeout(() => {
+      //
+      //   }, 400)
+      // })
     },
     methods: {
-      tt(event) {
-        window.console.log(event)
-      },
       // 初始化腾讯云播放器
       getVideoLang(fileID, appID) {
         const playerParam = {
@@ -188,7 +201,6 @@
         return axios.post('http://47.103.30.166:8020/videoroom/signature')
           .then(function (response) {
             //alert(response.data)
-            console.log(response)
             return response.data
           })
       },
@@ -197,10 +209,10 @@
         this.showJindu = false
       },
       ShangChuan(event) {
-        let self = this
         if (this.uploader != null) {
           this.uploader.cancel()
         }
+        let self = this
         //let file = document.querySelector('input[type=file]')
         //let mediaFile = file.files[0]
         let mediaFile = event.raw
@@ -218,12 +230,21 @@
         this.uploader.done().then(function (doneResult) {
           self.showJindu=false
           self.Fileid=doneResult.fileId
-          self.player.loadVideoByID({
-            fileID: self.Fileid, // 请传入需要播放的视频 filID（必须）
-            appID: self.Appid, // 请传入点播账号的 appID（必须）
+          axios.get('http://47.103.30.166:8020/Room/setVideo', {
+            params: {
+              room_id: this.$store.state.currentRoomId,
+              videoFileId: self.Fileid
+            }
+          }).then(res => {
+            window.console.log(res)
+            this.$store.commit('setVideoRoomId', self.Fileid)
+            self.player.loadVideoByID({
+              fileID: self.Fileid, // 请传入需要播放的视频 filID（必须）
+              appID: self.Appid, // 请传入点播账号的 appID（必须）
+            })
+            self.showVideo=true
+            self.$parent.showVideo=true
           })
-          self.showVideo=true
-          self.$parent.showVideo=true
         })
       },
 
@@ -231,16 +252,25 @@
         this.showList=!this.showList
       },
       changeVideo(fileID) {
-        this.Fileid=fileID
-        this.player.loadVideoByID({
-          fileID: this.Fileid, // 请传入需要播放的视频 filID（必须）
-          appID: this.Appid, // 请传入点播账号的 appID（必须）
-        })
-        this.showVideo=true
-        this.$parent.showVideo=true
         if (this.uploader != null) {
           this.uploader.cancel()
         }
+
+        this.Fileid=fileID
+        axios.get('http://47.103.30.166:8020/Room/setVideo', {
+          params: {
+            room_id: this.$store.state.currentRoomId,
+            videoFileId: this.Fileid
+          }
+        }).then(res => {
+          this.$store.commit('setVideoRoomId', this.Fileid)
+          this.player.loadVideoByID({
+            fileID: this.Fileid, // 请传入需要播放的视频 filID（必须）
+            appID: this.Appid, // 请传入点播账号的 appID（必须）
+          })
+          this.showVideo=true
+          this.$parent.showVideo=true
+        })
       }
     }
   }

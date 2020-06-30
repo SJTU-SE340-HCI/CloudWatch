@@ -1,99 +1,122 @@
 <template>
-  <div>
-    <div class='login-wrapper'>
-      <div class="title">
-        {{ this.isEnterRoom ? "进入房间" : "创建房间" }}
+  <div class="container center">
+    <div>
+      <div class='login-wrapper'>
+        <div class="title">
+          {{ this.isEnterRoom ? "进入房间" : "创建房间" }}
+        </div>
+        <el-form
+                ref="room"
+                :rules='rules'
+                :model='form'
+                label-width='0'
+                style='width:100%'
+                v-if="isEnterRoom"
+        >
+          <el-form-item prop='room'>
+            <el-input v-model='form.room' placeholder='请输入房间号' type='text' clearable></el-input>
+          </el-form-item>
+          <el-form-item prop='password'>
+            <el-input
+                    v-model='form.password'
+                    placeholder='请输入密码'
+                    type='password'
+                    show-password
+                    clearable
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <el-form
+                ref="room"
+                :rules='rules'
+                :model='createRoomForm'
+                label-width='75px'
+                style='width:100%'
+                v-else
+        >
+          <el-form-item label="房间名" prop="roomName">
+            <el-input v-model="createRoomForm.roomName" placeholder='请输入房间名'></el-input>
+          </el-form-item>
+          <el-form-item label="是否公开">
+            <el-switch v-model="createRoomForm.isPublic"></el-switch>
+          </el-form-item>
+          <el-form-item label="房间类型">
+            <el-radio v-model="createRoomForm.roomKind" label="0">普通房间</el-radio>
+            <el-radio v-model="createRoomForm.roomKind" label="1">电影房间(支持回放)</el-radio>
+          </el-form-item>
+          <el-form-item prop='password' label="密码" v-if="!createRoomForm.isPublic">
+            <el-input
+                    v-model='createRoomForm.password'
+                    placeholder='请输入密码'
+                    type='password'
+                    show-password
+                    clearable
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <el-button
+                type='primary'
+                @click='enterRoom'
+                style='width:100%; margin: 5px'
+                :loading='isLoading'
+                v-show='isEnterRoom'
+        >进入房间</el-button>
+        <el-button
+                @click='isEnterRoom = false'
+                style='width:100%; margin: 5px'
+                v-show='isEnterRoom'
+        >去创建房间</el-button>
+        <el-button
+                type='primary'
+                @click='createRoom'
+                style='width:100%; margin: 5px'
+                :loading='isLoading'
+                v-show='!isEnterRoom'
+        >创建房间</el-button>
+        <el-button
+                @click='isEnterRoom = true'
+                style='width:100%; margin: 5px'
+                v-show='!isEnterRoom'
+        >去进入房间</el-button>
       </div>
-      <el-form
-              ref="room"
-              :rules='rules'
-              :model='form'
-              label-width='0'
-              style='width:100%'
-              v-if="isEnterRoom"
-      >
-        <el-form-item prop='room'>
-          <el-input v-model='form.room' placeholder='请输入房间号' type='text' clearable></el-input>
-        </el-form-item>
-        <el-form-item prop='password'>
-          <el-input
-                  v-model='form.password'
-                  placeholder='请输入密码'
-                  type='password'
-                  show-password
-                  clearable
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <el-form
-              ref="room"
-              :rules='rules'
-              :model='createRoomForm'
-              label-width='75px'
-              style='width:100%'
-              v-else
-      >
-        <el-form-item label="房间名" prop="roomName">
-          <el-input v-model="createRoomForm.roomName" placeholder='请输入房间名'></el-input>
-        </el-form-item>
-        <el-form-item label="是否公开">
-          <el-switch v-model="createRoomForm.isPublic"></el-switch>
-        </el-form-item>
-        <el-form-item label="房间类型">
-             <el-radio v-model="createRoomForm.roomKind" label="0">普通房间</el-radio>
-              <el-radio v-model="createRoomForm.roomKind" label="1">电影房间(支持回放)</el-radio>
-        </el-form-item>
-        <el-form-item prop='password' label="密码" v-if="!createRoomForm.isPublic">
-          <el-input
-                  v-model='createRoomForm.password'
-                  placeholder='请输入密码'
-                  type='password'
-                  show-password
-                  clearable
-          ></el-input>
-        </el-form-item>
-      </el-form>
-      <el-button
-              type='primary'
-              @click='enterRoom'
-              style='width:100%; margin: 5px'
-              :loading='isLoading'
-              v-show='isEnterRoom'
-      >进入房间</el-button>
-      <el-button
-              @click='isEnterRoom = false'
-              style='width:100%; margin: 5px'
-              v-show='isEnterRoom'
-      >去创建房间</el-button>
-      <el-button
-              type='primary'
-              @click='createRoom'
-              style='width:100%; margin: 5px'
-              :loading='isLoading'
-              v-show='!isEnterRoom'
-      >创建房间</el-button>
-      <el-button
-              @click='isEnterRoom = true'
-              style='width:100%; margin: 5px'
-              v-show='!isEnterRoom'
-      >去进入房间</el-button>
+      <div class='login-wrapper' @click="showMyRoom">
+        我的房间
+      </div>
+      <div class="profile">
+        <my-profile/>
+      </div>
     </div>
-    <div class='login-wrapper'>
-      观影记录
+    <div v-if="showRooms" class="rooms center">
+      <el-card class="box-card">
+        <el-table
+                :data="rooms"
+                style="width: 100%">
+          <el-table-column
+                  prop="idRoom"
+                  label="房间id"
+                  width="180">
+          </el-table-column>
+          <el-table-column
+                  prop="passwordRoom"
+                  label="房间密码"
+                  width="180">
+          </el-table-column>
+          <el-table-column
+                  label="操作"
+                  width="100">
+            <template slot-scope="scope">
+              <el-button @click="handleEnterRoom(scope.row)" type="text" size="small">进入房间</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-card>
     </div>
-    <div class="login-wrapper">
-      热门房间
-    </div>
-    <div class="profile">
-      <my-profile/>
-    </div>
-
   </div>
 </template>
 
 <script>
   import axios from 'axios'
-  import { Form, FormItem, Switch, Radio} from 'element-ui'
+  import { Form, FormItem, Switch, Radio, Table, TableColumn, Card} from 'element-ui'
   import MyProfile from './my-profile'
   import { mapState } from 'vuex'
 
@@ -106,6 +129,9 @@
       ElFormItem: FormItem,
       ElSwitch: Switch,
       ElRadio: Radio,
+      ElTable: Table,
+      ElTableColumn: TableColumn,
+      ElCard: Card,
       MyProfile,
     },
 
@@ -141,6 +167,8 @@
         },
         isLoading: false,
         isEnterRoom: true,
+        showRooms: false,
+        rooms: [],
       }
     },
 
@@ -150,7 +178,62 @@
       }),
     },
 
+    mounted() {
+      axios.get('http://47.103.30.166:8020/User/findById', {
+        params: {
+          user_id: this.userID_cw
+        }
+      }).then(res => {
+        this.rooms = res.data.rooms
+      })
+    },
+
     methods: {
+      showMyRoom() {
+        this.showRooms = !this.showRooms
+      },
+      handleEnterRoom(room) {
+        console.log("shit")
+        axios
+          .get('http://47.103.30.166:8020/Room/SignIn', {
+            params: {
+              room_id: room.idRoom,
+              password: room.passwordRoom
+            }
+          })
+          .then(res => {
+            var signInRes = res.data
+            if (signInRes === 'invalid room') {
+              this.$store.commit('showMessage', {
+                type: 'error',
+                message: '房间不存在'
+              })
+              return
+            } else {
+              if (signInRes === 'invalid password') {
+                this.$store.commit('showMessage', {
+                  type: 'error',
+                  message: '密码不正确'
+                })
+                return
+              } else {
+                // get room infor from backend
+                axios
+                  .get('http://47.103.30.166:8020/Room/findById', {
+                    params: {
+                      room_id: room.idRoom
+                    }
+                  })
+                  .then(res => {
+                    this.$store.commit('changeRoom', res.data)
+                  })
+                this.$store.commit('changeRoomId', room.idRoom)
+
+                this.joinChatGroup(room.idRoom.toString())
+              }
+            }
+          })
+      },
       enterRoomSuccess(groupID) {
         this.$store.dispatch('checkoutConversation', 'GROUP' + groupID)
         if(this.$store.state.currentRoom.kindRoom==1) {
@@ -345,4 +428,21 @@
     align-items: center;
     justify-content: center;
   }
+
+  .rooms {
+    display: flex;
+    flex-direction column
+    padding 80px
+  }
+
+  .container {
+    display: flex;
+    flex-direction row
+  }
+
+  .center {
+    justify-content center
+    align-content center
+  }
+
 </style>
