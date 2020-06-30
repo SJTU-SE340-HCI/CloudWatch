@@ -73,6 +73,7 @@
                 showList: false,
                 showVideo: false,
                 showJindu: false,
+                isPause:false,
                 uploader: null,
                 jindu: 0,
                 Fileid: '0',
@@ -119,26 +120,39 @@
         },
         mounted() {
             let self = this
-            this.$nextTick(() => {
-                setTimeout(() => {
-                    let videoFileid = this.Fileid
-                    let videoAppid = this.Appid
-                    self.getVideoLang(videoFileid, videoAppid)
-                }, 400)
+            let videoFileid = this.Fileid
+            let videoAppid = this.Appid
+            self.getVideoLang(videoFileid, videoAppid)
+            axios.get('http://47.103.30.166:8020/Room/findById', {
+                params: {
+                    room_id: this.$store.state.currentRoomId
+                }
+            }).then(res => {
+                if (res.data.videoFileId != undefined || res.data.videoFileId != null) {
+                    // this.$store.commit('setVideoRoomId', this.Fileid)
+                    // this.player.loadVideoByID({
+                    //   fileID: res.data.videoFileId, // 请传入需要播放的视频 filID（必须）
+                    //   appID: this.Appid, // 请传入点播账号的 appID（必须）
+                    // })
+                    // this.showVideo=true
+                    // this.$parent.showVideo=true
+                }
             })
+            // this.$nextTick(() => {
+            //   setTimeout(() => {
+            //
+            //   }, 400)
+            // })
         },
         methods: {
-            tt(event) {
-                window.console.log(event)
-            },
             // 初始化腾讯云播放器
             getVideoLang(fileID, appID) {
                 const playerParam = {
                     fileID: this.Fileid,
                     appID: appID,
-                    controlBar:{
-                        fullscreenToggle:false,
-                        playbackRateMenuButton:false
+                    controlBar: {
+                        fullscreenToggle: false,
+                        playbackRateMenuButton: false
                     }
                 }
                 this.player = window.TCPlayer(this.tcPlayerId, playerParam)
@@ -165,30 +179,14 @@
                 this.$parent.finishRecord()
             },
 
-            setFileid() {
-                let self = this
-                axios.get('http://localhost:8020/videoroom/fileid', {
-                    params: {
-                        RoomId: this.$store.state.currentRoomId,
-                        FileId:this.Fileid
-                    }
-                }).then(function (response) {
-                    let fileid = response.data
-                    alert(fileid)
-                    self.Fileid=fileid
-                    if(fileid!='0') {
-                        self.showVideo = true
-                        self.$parent.showVideo = true
-                    }
-                })
-            },
             playVideo() {
                 let self = this
                 let time = this.player.currentTime()
                 //alert(time)
                 axios.get('http://47.103.30.166:8020/videoroom/play', {
                     params: {
-                        RoomId: this.$store.state.currentRoomId,
+                        roomid: this.$store.state.currentRoomId,
+                        //RoomId: '666',
                         curTime: time
                     }
                 }).then(function (response) {
@@ -236,32 +234,52 @@
                 this.uploader.done().then(function (doneResult) {
                     self.showJindu = false
                     self.Fileid = doneResult.fileId
-                    self.player.loadVideoByID({
-                        fileID: self.Fileid, // 请传入需要播放的视频 filID（必须）
-                        appID: self.Appid, // 请传入点播账号的 appID（必须）
+                    axios.get('http://47.103.30.166:8020/Room/setVideo', {
+                        params: {
+                            room_id: this.$store.state.currentRoomId,
+                            videoFileId: self.Fileid
+                        }
+                    }).then(res => {
+                        window.console.log(res)
+                        this.$store.commit('setVideoRoomId', self.Fileid)
+                        self.player.loadVideoByID({
+                            fileID: self.Fileid, // 请传入需要播放的视频 filID（必须）
+                            appID: self.Appid, // 请传入点播账号的 appID（必须）
+                        })
+                        self.showVideo = true
+                        self.$parent.showVideo = true
                     })
-                    self.showVideo = true
-                    self.$parent.showVideo = true
                 })
             },
-
             showVideoList() {
                 this.showList = !this.showList
-            },
+            }
+            ,
             changeVideo(fileID) {
-                this.Fileid = fileID
-                this.player.loadVideoByID({
-                    fileID: this.Fileid, // 请传入需要播放的视频 filID（必须）
-                    appID: this.Appid, // 请传入点播账号的 appID（必须）
-                })
-                this.showVideo = true
-                this.$parent.showVideo = true
                 if (this.uploader != null) {
                     this.uploader.cancel()
                 }
+
+                this.Fileid = fileID
+                axios.get('http://47.103.30.166:8020/Room/setVideo', {
+                    params: {
+                        room_id: this.$store.state.currentRoomId,
+                        videoFileId: this.Fileid
+                    }
+                }).then(res => {
+                    this.$store.commit('setVideoRoomId', this.Fileid)
+                    this.player.loadVideoByID({
+                        fileID: this.Fileid, // 请传入需要播放的视频 filID（必须）
+                        appID: this.Appid, // 请传入点播账号的 appID（必须）
+                    })
+                    this.showVideo = true
+                    this.$parent.showVideo = true
+                })
             }
         }
     }
+
+
 </script>
 
 <style lang='stylus' scoped>
