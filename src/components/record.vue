@@ -9,12 +9,14 @@
 
 <script>
 import axios from 'axios'
+import {Howl, Howler} from 'howler';
 export default {
     data() {
         return {
             isPresenting: false,
             isRecording:false,
-            recordedBarrages: new Map()
+            recordedBarrages: new Map(),
+            recordedVoices: []
         }
     },
     methods: {
@@ -54,11 +56,8 @@ export default {
         },
 
         presentRecord() {
-            /*
-            从后端拿到弹幕消息
-            根据当前开始的时间轮询弹幕消息的队列
-            */
             this.isPresenting=true
+            // 从后端拿到弹幕消息
             var videoid = new Number(this.$store.getters.getCurrentVideoId)
             axios
             .get('http://47.103.30.166:8020/Room/textRecord/findByVideoId', {
@@ -70,8 +69,28 @@ export default {
             this.recordedBarrages = res.data
             }
             )
+            
+            // 从后端拿到聊天音频
+            axios.get('http://47.103.30.166:8020/Room/voiceRecord/findPreviousRecord', {
+                params:{
+                    room_id: this.$store.state.currentRoomId
+                }
+            })
+            .then(res => {
+                this.recordedVoices=res.data
+                console.log(this.recordedVoices[0])
+            })
 
-            // 轮询
+            var sound =  new Howl({
+                src: 'http://1301703207.vod2.myqcloud.com/e0ee959avodcq1301703207/78b6c3ee5285890804744856150/f0.aac',
+                html5: true, // A live stream can only be played through HTML5 Audio.
+                format: ['mp3', 'aac']
+            });
+            
+            // Begin playing the sound.
+            sound.play()
+
+            // 根据当前开始的时间轮询弹幕消息的队列
             const timeId = setInterval(() => {
                 if (this.isPresenting == false) {
                 clearInterval(timeId)
