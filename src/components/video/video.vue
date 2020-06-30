@@ -121,29 +121,28 @@
     },
     mounted() {
       let self = this
-      let videoFileid = this.Fileid
-      let videoAppid = this.Appid
-      self.getVideoLang(videoFileid, videoAppid)
-      axios.get('http://47.103.30.166:8020/Room/findById', {
-        params: {
-          room_id: this.$store.state.currentRoomId
-        }
-      }).then(res => {
-        if (res.data.videoFileId != undefined || res.data.videoFileId != null) {
-          // this.$store.commit('setVideoRoomId', this.Fileid)
-          // this.player.loadVideoByID({
-          //   fileID: res.data.videoFileId, // 请传入需要播放的视频 filID（必须）
-          //   appID: this.Appid, // 请传入点播账号的 appID（必须）
-          // })
-          // this.showVideo=true
-          // this.$parent.showVideo=true
-        }
+      this.$nextTick(() => {
+        setTimeout(() => {
+          let videoFileid = this.Fileid
+          let videoAppid = this.Appid
+          self.getVideoLang(videoFileid, videoAppid)
+          axios.get('http://47.103.30.166:8020/Room/findById', {
+            params: {
+              room_id: this.$store.state.currentRoomId
+            }
+          }).then(res => {
+            if (res.data != '' && (res.data.videoFileId != undefined || res.data.videoFileId != null)) {
+              this.$store.commit('setVideoRoomId', this.Fileid)
+              this.player.loadVideoByID({
+                fileID: res.data.videoFileId, // 请传入需要播放的视频 filID（必须）
+                appID: this.Appid, // 请传入点播账号的 appID（必须）
+              })
+              this.showVideo=true
+              this.$parent.showVideo=true
+            }
+          })
+        }, 400)
       })
-      // this.$nextTick(() => {
-      //   setTimeout(() => {
-      //
-      //   }, 400)
-      // })
     },
     methods: {
       // 初始化腾讯云播放器

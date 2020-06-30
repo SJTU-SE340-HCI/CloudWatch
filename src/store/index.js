@@ -103,7 +103,6 @@ export default new Vuex.Store({
     {
       var fileid=new Number(parseInt(videoFileId,10))
       state.currentVideoRoomId=fileid&0xffffff
-      console.log(state.currentVideoRoomId)
     },
 
     addBarrage(state,barrageContent)

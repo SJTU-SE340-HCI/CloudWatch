@@ -193,7 +193,6 @@
         this.showRooms = !this.showRooms
       },
       handleEnterRoom(room) {
-        console.log("shit")
         axios
           .get('http://47.103.30.166:8020/Room/SignIn', {
             params: {
@@ -356,6 +355,7 @@
                 })
               }
 
+              this.$store.commit('changeRoomId', res.data.toString())
               this.joinChatGroup(res.data.toString(), this.createRoomForm.roomName)
             }).catch(error => {
               window.console.log(error)
@@ -380,7 +380,8 @@
                 })
               }
 
-              this.joinChatGroup(res.data.toString(), this.createRoomForm.roomName)
+                this.$store.commit('changeRoomId', res.data.toString())
+                this.joinChatGroup(res.data.toString(), this.createRoomForm.roomName)
             }).catch(error => {
               window.console.log(error)
               this.$store.commit('showMessage', {
