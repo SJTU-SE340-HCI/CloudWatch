@@ -299,6 +299,7 @@ export default {
         window.console.log(this.$parent.$parent.$parent)
         this.$parent.$parent.$parent.$parent.addToList([{
           type: this.TIM.TYPES.MSG_TEXT,
+          from: this.userID,
           avatar: this.currentUserProfile.avatar,
           nick: this.currentUserProfile.nick,
           payload: { text: content }

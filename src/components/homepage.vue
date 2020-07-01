@@ -37,13 +37,9 @@
           <el-form-item label="房间名" prop="roomName">
             <el-input v-model="createRoomForm.roomName" placeholder='请输入房间名'></el-input>
           </el-form-item>
-          <el-form-item label="是否公开">
-            <el-switch v-model="createRoomForm.isPublic"></el-switch>
-          </el-form-item>
-          <el-form-item label="房间类型">
-            <el-radio v-model="createRoomForm.roomKind" label="0">普通房间</el-radio>
-            <el-radio v-model="createRoomForm.roomKind" label="1">电影房间(支持回放)</el-radio>
-          </el-form-item>
+<!--          <el-form-item label="是否公开">-->
+<!--            <el-switch v-model="createRoomForm.isPublic"></el-switch>-->
+<!--          </el-form-item>-->
           <el-form-item prop='password' label="密码" v-if="!createRoomForm.isPublic">
             <el-input
                     v-model='createRoomForm.password'
@@ -52,6 +48,10 @@
                     show-password
                     clearable
             ></el-input>
+          </el-form-item>
+          <el-form-item label="房间类型">
+            <el-radio v-model="createRoomForm.roomKind" label="0">普通房间</el-radio>
+            <el-radio v-model="createRoomForm.roomKind" label="1">电影房间(支持回放)</el-radio>
           </el-form-item>
         </el-form>
         <el-button
@@ -153,7 +153,7 @@
         createRoomForm: {
           roomName: '',
           password: '',
-          isPublic: true,
+          isPublic: false,
           roomKind:'0',
         },
         rules: {
@@ -345,7 +345,7 @@
               params: {
                 user_id: this.userID_cw,
                 passwordRoom: this.createRoomForm.password,
-                statusRoom: this.createRoomForm.isPublic ? 'public' : 'private'
+                statusRoom: 'private'
               }
             }).then(res => {
               if (res.data == 'invalid param') {
@@ -378,7 +378,7 @@
               params: {
                 user_id: this.userID_cw,
                 passwordRoom: this.createRoomForm.password,
-                statusRoom: this.createRoomForm.isPublic ? 'public' : 'private'
+                statusRoom: 'private'
               }
             }).then(res => {
               window.console.log(res.data)

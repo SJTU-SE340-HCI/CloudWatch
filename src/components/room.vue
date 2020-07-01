@@ -60,6 +60,7 @@
   import Record from './record'
   import screenfull from 'screenfull'
   import { MESSAGE_TYPE } from 'vue-baberrage'
+  import axios from 'axios'
 
   export default {
     name: 'Room',
@@ -114,17 +115,21 @@
           extraWidth: 2,
         })
         if (this.$store.getters.getRecordingState == true) {
-          var barrageMsg= nick + ':' + groupMessageList[0].payload.text
+          var barrageMsg= avatar + '}' + nick + '}' + groupMessageList[0].payload.text
           this.$store.commit('addBarrage',barrageMsg)
         }
       },
 
       sendBarrage(message) {
-        console.log('parent receive')
+        console.log(message)
+        let splitted = message.split('}')
+        console.log(splitted)
+
         this.barrageList.push({
           id: ++this.currentId,
-          msg: message,
+          msg:  splitted[1] + ':' + splitted[2],
           time: 10,
+          avatar: splitted[0],
           type: MESSAGE_TYPE.NORMAL,
           extraWidth: 2,
         })

@@ -260,6 +260,7 @@ export default {
       this.tim.sendMessage(message).then(() => {
         this.$parent.addToList([{
           type: this.TIM.TYPES.MSG_TEXT,
+          from: this.userID,
           avatar: this.currentUserProfile.avatar,
           nick: this.currentUserProfile.nick,
           payload: { text: content }
