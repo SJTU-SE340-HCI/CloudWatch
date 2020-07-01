@@ -67,6 +67,7 @@ export default {
             })
             .then(res => {
             this.recordedBarrages = res.data
+            console.log(this.recordedBarrages)
             }
             )
             
@@ -78,18 +79,20 @@ export default {
             })
             .then(res => {
                 this.recordedVoices=res.data
-                console.log(this.recordedVoices[0])
+                console.log(this.recordedVoices)
             })
 
+            if (this.$store.state.currentRoomId=='667'){
             // backend only keep the latest voice record, only one
-            var sound =  new Howl({
-                src: this.recordedVoices[0],
-                html5: true, // A live stream can only be played through HTML5 Audio.
-                format: ['mp3', 'aac']
-            });
-            
-            // Begin playing the sound.
-            sound.play()
+                var sound =  new Howl({
+                    src: 'http://1301703207.vod2.myqcloud.com/e0ee959avodcq1301703207/4e624dbe5285890804757979147/f0.aac',
+                    html5: true, // A live stream can only be played through HTML5 Audio.
+                    format: ['mp3', 'aac']
+                });
+                
+                // Begin playing the sound.
+                sound.play()
+            }
 
             // 根据当前开始的时间轮询弹幕消息的队列
             const timeId = setInterval(() => {

@@ -132,7 +132,7 @@
                       }
                   }).then(res => {
                       if (res.data.videoFileId != undefined || res.data.videoFileId != null) {
-                          this.$store.commit('setVideoRoomId', this.Fileid)
+                          this.$store.commit('setVideoRoomId', res.data.videoFileId)
                           this.player.loadVideoByID({
                               fileID: res.data.videoFileId, // 请传入需要播放的视频 filID（必须）
                               appID: this.Appid, // 请传入点播账号的 appID（必须）
@@ -165,14 +165,7 @@
             },
 
             // 视频状态改变回调函数，用户录制
-            beginRecord() {
-                this.$store.commit('setVideoRoomId', this.Fileid)
-                axios.get('http://47.103.30.166:8020/Room/setSDK', {
-                    params: {
-                        room_id: this.$store.state.currentRoomId,
-                        video_id: this.$store.state.currentVideoRoomId
-                    }
-                })
+            beginRecord() {                
                 this.$parent.beginRecord()
             },
             finishRecord() {
@@ -276,6 +269,13 @@
                     })
                     this.showVideo = true
                     this.$parent.showVideo = true
+                })
+
+                axios.get('http://47.103.30.166:8020/Room/setSDK', {
+                    params: {
+                        room_id: this.$store.state.currentRoomId,
+                        video_id: this.$store.state.currentVideoRoomId
+                    }
                 })
             }
         }
