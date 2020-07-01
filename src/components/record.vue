@@ -81,8 +81,9 @@ export default {
                 console.log(this.recordedVoices[0])
             })
 
+            // backend only keep the latest voice record, only one
             var sound =  new Howl({
-                src: 'http://1301703207.vod2.myqcloud.com/e0ee959avodcq1301703207/78b6c3ee5285890804744856150/f0.aac',
+                src: this.recordedVoices[0],
                 html5: true, // A live stream can only be played through HTML5 Audio.
                 format: ['mp3', 'aac']
             });
