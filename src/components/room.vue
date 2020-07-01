@@ -60,7 +60,6 @@
   import Record from './record'
   import screenfull from 'screenfull'
   import { MESSAGE_TYPE } from 'vue-baberrage'
-  import {decodeText} from '../utils/decodeText'
 
   export default {
     name: 'Room',

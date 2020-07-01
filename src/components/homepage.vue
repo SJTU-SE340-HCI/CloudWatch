@@ -90,7 +90,7 @@
       <el-card class="box-card">
         <el-table
                 :data="rooms"
-                height="750"
+                height="850"
                 style="width: 100%">
           <el-table-column
                   prop="idRoom"
@@ -348,13 +348,21 @@
                 statusRoom: this.createRoomForm.isPublic ? 'public' : 'private'
               }
             }).then(res => {
-              window.console.log(res.data)
               if (res.data == 'invalid param') {
                 this.$store.commit('showMessage', {
                   type: 'error',
                   message: '无效的创建参数'
                 })
               }
+              axios
+                .get('http://47.103.30.166:8020/Room/findById', {
+                  params: {
+                    room_id: res.data.toString()
+                  }
+                })
+                .then(res => {
+                  this.$store.commit('changeRoom', res.data)
+                })
 
               this.$store.commit('changeRoomId', res.data.toString())
               this.joinChatGroup(res.data.toString(), this.createRoomForm.roomName)
@@ -380,6 +388,15 @@
                   message: '无效的创建参数'
                 })
               }
+                axios
+                  .get('http://47.103.30.166:8020/Room/findById', {
+                    params: {
+                      room_id: res.data.toString()
+                    }
+                  })
+                  .then(res => {
+                    this.$store.commit('changeRoom', res.data)
+                  })
 
                 this.$store.commit('changeRoomId', res.data.toString())
                 this.joinChatGroup(res.data.toString(), this.createRoomForm.roomName)
@@ -445,6 +462,10 @@
   .center {
     justify-content center
     align-content center
+  }
+
+  .box-card {
+    padding-bottom 50px
   }
 
 </style>
